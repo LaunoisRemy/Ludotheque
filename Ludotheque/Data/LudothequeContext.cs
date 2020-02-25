@@ -15,5 +15,11 @@ namespace Ludotheque.Data
         }
 
         public DbSet<Ludotheque.Models.Jeu> Jeu { get; set; }
+        public DbSet<Ludotheque.Models.Game> Games { get; set; }
+        public DbSet<Ludotheque.Models.Category> Categories { get; set; }
+        public DbSet<Ludotheque.Models.Difficulty> Difficulties { get; set; }
+        public DbSet<Ludotheque.Models.Editor> Editors { get; set; }
+        public DbSet<Ludotheque.Models.Illustrator> Illustrators { get; set; }
+
     }
 }

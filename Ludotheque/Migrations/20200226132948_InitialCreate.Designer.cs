@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ludotheque.Migrations
 {
     [DbContext(typeof(LudothequeContext))]
-    [Migration("20200225142449_InitialCreate")]
+    [Migration("20200226132948_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -123,8 +123,8 @@ namespace Ludotheque.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.Property<DateTime>("ReleaseDate")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("ReleaseDate")
+                        .HasColumnType("int");
 
                     b.Property<bool>("Validate")
                         .HasColumnType("bit");

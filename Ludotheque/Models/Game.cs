@@ -42,8 +42,10 @@ namespace Ludotheque.Models
         [Display(Name = "Prix")]
         public decimal Price { get; set; }
 
+        //TODO:Check comment faire pour mettre l'année actuelle en in Range
+        [Range(1900, 2100)]
         [Display(Name = "Date de sortie")]
-        public DateTime ReleaseDate { get; set; }
+        public int ReleaseDate { get; set; }
 
         [Url]
         [Display(Name = "Lien d'achat")]
@@ -56,7 +58,7 @@ namespace Ludotheque.Models
         [Display(Name = "Lien, chemin de l'image")]
         public string PictureLink { get; set; }
 
-        [Display(Name = "Validée")]
+        [Display(Name = "Validé")]
         public bool Validate { get; set; }
 
         // Foreign key

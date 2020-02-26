@@ -193,7 +193,7 @@
             valInfo.options.messages[element.name] = messages = {};
 
             $.each(this.adapters, function () {
-                var prefix = "data-val-" + this.name,
+                var prefix = "data-val-" + this.name,   
                     message = $element.attr(prefix),
                     paramValues = {};
 

@@ -7,84 +7,65 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Ludotheque.Data;
 using Ludotheque.Models;
-using Ludotheque.Services;
 
 namespace Ludotheque.Controllers
 {
-    public class GamesController : Controller
+    public class CategoriesController : Controller
     {
         private readonly LudothequeContext _context;
-        private GamesService _gameService;
 
-        public GamesController(LudothequeContext context)
+        public CategoriesController(LudothequeContext context)
         {
             _context = context;
-            _gameService = new GamesService(context);
-
         }
 
-        // GET: Games
-        public async Task<IActionResult> Index(string searchString)
+        // GET: Categories
+        public async Task<IActionResult> Index()
         {
-            //return View(await _context.Jeu.ToListAsync());
-            IQueryable<Game> games;
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                games = _gameService.GetGamesByName(searchString);
-            }
-            else
-            {
-                games = _gameService.GetGames();
-            }
-
-            return View(await games.ToListAsync());
+            return View(await _context.Categories.ToListAsync());
         }
 
-        // GET: Games/Details/5
+        // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            else
-            {
-                int _id = (int) id;
-                var game = await _gameService.GetGameById(_id);
-                if (game == null)
-                {
-                    return NotFound();
-                }
 
-                return View(game);
+            var category = await _context.Categories
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (category == null)
+            {
+                return NotFound();
             }
 
-
+            return View(category);
         }
 
-        // GET: Games/Create
+        // GET: Categories/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Games/Create
+        // POST: Categories/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,MinPlayer,MaxPlayer,MinimumAge,GameTime,Price,ReleaseDate,BuyLink,VideoLink,PictureLink,Validate")] Game game)
+        public async Task<IActionResult> Create([Bind("Id,Description,Type")] Category category)
         {
             if (ModelState.IsValid)
             {
-                _gameService.AddGame(game);
+                _context.Add(category);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(game);
+            return View(category);
         }
 
-        // GET: Games/Edit/5
+        // GET: Categories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -92,37 +73,36 @@ namespace Ludotheque.Controllers
                 return NotFound();
             }
 
-            var game = await _context.Games.FindAsync(id);
-            if (game == null)
+            var category = await _context.Categories.FindAsync(id);
+            if (category == null)
             {
                 return NotFound();
             }
-            return View(game);
+            return View(category);
         }
 
-        // POST: Games/Edit/5
+        // POST: Categories/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,MinPlayer,MaxPlayer,MinimumAge,GameTime,Price,ReleaseDate,BuyLink,VideoLink,PictureLink,Validate")] Game game)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Description,Type")] Category category)
         {
-            decimal prix = game.Price;
-            if (id != game.Id)
+            if (id != category.Id)
             {
                 return NotFound();
             }
-            //Todo : Erreur de validation a cause du 
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(game);
+                    _context.Update(category);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!GameExists(game.Id))
+                    if (!CategoryExists(category.Id))
                     {
                         return NotFound();
                     }
@@ -133,10 +113,10 @@ namespace Ludotheque.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(game);
+            return View(category);
         }
 
-        // GET: Games/Delete/5
+        // GET: Categories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -144,30 +124,30 @@ namespace Ludotheque.Controllers
                 return NotFound();
             }
 
-            var game = await _context.Games
+            var category = await _context.Categories
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (game == null)
+            if (category == null)
             {
                 return NotFound();
             }
 
-            return View(game);
+            return View(category);
         }
 
-        // POST: Games/Delete/5
+        // POST: Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var game = await _context.Games.FindAsync(id);
-            _context.Games.Remove(game);
+            var category = await _context.Categories.FindAsync(id);
+            _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool GameExists(int id)
+        private bool CategoryExists(int id)
         {
-            return _context.Games.Any(e => e.Id == id);
+            return _context.Categories.Any(e => e.Id == id);
         }
     }
 }

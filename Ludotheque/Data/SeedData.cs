@@ -94,7 +94,15 @@ namespace Ludotheque.Models
                         Price = 18,
                         MaxPlayer = 7,
                         MinPlayer = 4,
-                        MinimumAge = 8
+                        MinimumAge = 8,
+                    }, new Game
+                    {
+                        Name = "Sheriff de Nottingham",
+                        Description = "Jeu de commerce",
+                        Price = 18,
+                        MaxPlayer = 5,
+                        MinPlayer = 3,
+                        MinimumAge = 13,
                     }
                 );
                 context.SaveChanges();

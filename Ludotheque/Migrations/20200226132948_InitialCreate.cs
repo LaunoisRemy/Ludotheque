@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Ludotheque.Migrations
 {
@@ -84,7 +83,7 @@ namespace Ludotheque.Migrations
                     MinimumAge = table.Column<int>(nullable: false),
                     GameTime = table.Column<string>(nullable: true),
                     Price = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    ReleaseDate = table.Column<DateTime>(nullable: false),
+                    ReleaseDate = table.Column<int>(nullable: false),
                     BuyLink = table.Column<string>(nullable: true),
                     VideoLink = table.Column<string>(nullable: true),
                     PictureLink = table.Column<string>(nullable: true),

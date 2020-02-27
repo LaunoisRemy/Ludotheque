@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Ludotheque.Models.Category>
+﻿@using TypeLudo = Ludotheque.Models.Type
+@model IEnumerable<Ludotheque.Models.Category>
 
 @{
     ViewData["Title"] = "Index";
@@ -27,9 +28,22 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Type)
-            </td>
+            @{
+                var type = item.Type;
+                if (type == TypeLudo.Theme)
+                {
+                    <td>Theme</td>
+                }
+                else if (type == TypeLudo.MaterialSupport)
+                {
+                    <td>Support Materiel</td>
+
+                }
+                else
+                {
+                    <td>Mécanisme</td>
+                }
+            }
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

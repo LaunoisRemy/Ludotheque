@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Ludotheque.Data;
+using Microsoft.AspNetCore.Localization;
 
 namespace Ludotheque
 {
@@ -19,11 +20,6 @@ namespace Ludotheque
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            var cultureInfo = new CultureInfo("fr-FR");
-            cultureInfo.NumberFormat.CurrencySymbol = "€";
-
-            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
-            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
         }
 
         public IConfiguration Configuration { get; }
@@ -63,6 +59,18 @@ namespace Ludotheque
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            var cultureInfo = new CultureInfo("fr-FR");
+            cultureInfo.NumberFormat.CurrencySymbol = "€";
+            var localizationOptions = new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture(cultureInfo),
+                SupportedCultures = new List<CultureInfo> { cultureInfo },
+                SupportedUICultures = new List<CultureInfo> { cultureInfo }
+            };
+            app.UseRequestLocalization(localizationOptions);
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
         }
     }
 }

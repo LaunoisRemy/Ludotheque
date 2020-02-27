@@ -6,6 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200227144739_InitialCreate.cs" />
+    <Compile Remove="Migrations\20200227144739_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20200227151110_InitialCreatea.cs" />
+    <Compile Remove="Migrations\20200227151110_InitialCreatea.Designer.cs" />
+    <Compile Remove="Migrations\20200227155100_InitialCreatea.cs" />
+    <Compile Remove="Migrations\20200227155100_InitialCreatea.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="jquery-globalize" Version="1.4.2" />
+    <PackageReference Include="jQuery.Validation.Globalize" Version="1.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.2">
@@ -13,6 +24,12 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="PagedList.Mvc">
+      <HintPath>..\..\..\..\.nuget\packages\pagedlist.mvc\4.5.0\lib\net40\PagedList.Mvc.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 

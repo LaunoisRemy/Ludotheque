@@ -1,5 +1,4 @@
-﻿@model IEnumerable<Ludotheque.Models.Game>
-
+﻿@model PaginatedList<Ludotheque.Models.Game>
 @{
     ViewData["Title"] = "Index";
 }
@@ -10,50 +9,52 @@
     <a asp-action="Create">Create New</a>
 </p>
 @*  asp-controller = Nom du controller; asp-action = nom de l'action du controller, lien href ; method = *@
-<form asp-controller="Games" asp-action="Index" method="get">
-    <p>
-        Nom: <input type="text" name="SearchString">
-        <input type="submit" value="Filter" />
-    </p>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Nom : <input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-action="Index">Back to Full List</a>
+        </p>
+    </div>
 </form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Nom</a>
+            </th>
+
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["MinPlSortParam"]" asp-route-currentFilter="@ViewBag.CurrentFilter">Nombre de joueur minimum </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["MaxPlSortParam"]" asp-route-currentFilter="@ViewBag.CurrentFilter">Nombre de joueur maximum </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MinPlayer)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["AgeSortParam"]" asp-route-currentFilter="@ViewBag.CurrentFilter">Age minimum </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MaxPlayer)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["TimeSortParam"]" asp-route-currentFilter="@ViewBag.CurrentFilter">Temps de jeu </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MinimumAge)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Prix</a>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Date Sortie</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.GameTime)
+                Lien image
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                Difficulties
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ReleaseDate)
+                Difficulties
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BuyLink)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.VideoLink)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PictureLink)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Validate)
+                Theme
             </th>
             <th></th>
         </tr>
@@ -61,50 +62,68 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MinPlayer)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MaxPlayer)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MinimumAge)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.GameTime)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ReleaseDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BuyLink)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.VideoLink)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PictureLink)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Validate)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MinPlayer)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaxPlayer)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MinimumAge)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GameTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReleaseDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PictureLink)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DifficultyId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Difficulty.label)
+            </td>
+            <div class="form-group">
+                <label class="control-label">Theme</label>
+                <select class="form-control" asp-items="ViewBag.Theme">
+                </select>
+            </div>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
 
-            </tr>
+        </tr>
         }
     </tbody>
 </table>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>

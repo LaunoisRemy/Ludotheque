@@ -2,7 +2,7 @@
 
 namespace Ludotheque.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialCreatea : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -31,6 +31,32 @@ namespace Ludotheque.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Editors", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GameCategories",
+                columns: table => new
+                {
+                    GameId = table.Column<int>(nullable: false),
+                    CategoryId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GameCategories", x => new { x.CategoryId, x.GameId });
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Gategories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Description = table.Column<string>(nullable: true),
+                    Type = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Gategories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -82,7 +108,7 @@ namespace Ludotheque.Migrations
                     MaxPlayer = table.Column<int>(nullable: false),
                     MinimumAge = table.Column<int>(nullable: false),
                     GameTime = table.Column<string>(nullable: true),
-                    Price = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    Price = table.Column<decimal>(nullable: false),
                     ReleaseDate = table.Column<int>(nullable: false),
                     BuyLink = table.Column<string>(nullable: true),
                     VideoLink = table.Column<string>(nullable: true),
@@ -115,32 +141,6 @@ namespace Ludotheque.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Categories",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Description = table.Column<string>(nullable: true),
-                    Type = table.Column<int>(nullable: false),
-                    GameId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Categories", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Categories_Games_GameId",
-                        column: x => x.GameId,
-                        principalTable: "Games",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Categories_GameId",
-                table: "Categories",
-                column: "GameId");
-
             migrationBuilder.CreateIndex(
                 name: "IX_Games_DifficultyId",
                 table: "Games",
@@ -160,13 +160,16 @@ namespace Ludotheque.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Categories");
-
-            migrationBuilder.DropTable(
-                name: "Jeu");
+                name: "GameCategories");
 
             migrationBuilder.DropTable(
                 name: "Games");
+
+            migrationBuilder.DropTable(
+                name: "Gategories");
+
+            migrationBuilder.DropTable(
+                name: "Jeu");
 
             migrationBuilder.DropTable(
                 name: "Difficulties");

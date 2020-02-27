@@ -31,7 +31,8 @@ namespace Ludotheque.Models
                     return;   // DB has been seeded
                 }
 
-                context.Difficulties.AddRange(
+                var diff = new Difficulty[]
+                {
                     new Difficulty
                     {
                         label  = Label.Easy
@@ -44,7 +45,14 @@ namespace Ludotheque.Models
                     {
                         label = Label.Hard
                     }
-                );
+
+                };
+                foreach (Difficulty d in diff)
+                {
+                    context.Difficulties.Add(d);
+                }
+                context.SaveChanges();
+
 
                 // Look for any games.
                 if (context.Games.Any())
@@ -60,7 +68,8 @@ namespace Ludotheque.Models
                         Price = 37.99m,
                         MaxPlayer = 4,
                         MinPlayer = 2,
-                        MinimumAge = 14
+                        MinimumAge = 14,
+                        DifficultyId = diff.Single( s => s.label == Label.Hard).Id
                     },
                     new Game
                     {

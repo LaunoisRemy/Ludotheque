@@ -20,6 +20,21 @@ namespace Ludotheque.Data
         public DbSet<Ludotheque.Models.Difficulty> Difficulties { get; set; }
         public DbSet<Ludotheque.Models.Editor> Editors { get; set; }
         public DbSet<Ludotheque.Models.Illustrator> Illustrators { get; set; }
+        public DbSet<Ludotheque.Models.GameCategory> GameCategories { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Jeu>().ToTable("Jeu");
+            modelBuilder.Entity<Game>().ToTable("Games");
+            modelBuilder.Entity<Category>().ToTable("Gategories");
+            modelBuilder.Entity<Difficulty>().ToTable("Difficulties");
+            modelBuilder.Entity<Editor>().ToTable("Editors");
+            modelBuilder.Entity<Illustrator>().ToTable("Illustrators");
+            modelBuilder.Entity<GameCategory>().ToTable("GameCategories");
+
+            modelBuilder.Entity<GameCategory>()
+                .HasKey(c => new { c.CategoryId, c.GameId });
+        }
 
     }
 }

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ludotheque.Migrations
 {
     [DbContext(typeof(LudothequeContext))]
-    [Migration("20200226132948_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20200227155916_InitialCreatea")]
+    partial class InitialCreatea
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -31,17 +31,12 @@ namespace Ludotheque.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("GameId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GameId");
-
-                    b.ToTable("Categories");
+                    b.ToTable("Gategories");
                 });
 
             modelBuilder.Entity("Ludotheque.Models.Difficulty", b =>
@@ -121,7 +116,7 @@ namespace Ludotheque.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ReleaseDate")
                         .HasColumnType("int");
@@ -141,6 +136,19 @@ namespace Ludotheque.Migrations
                     b.HasIndex("IllustratorId");
 
                     b.ToTable("Games");
+                });
+
+            modelBuilder.Entity("Ludotheque.Models.GameCategory", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GameId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CategoryId", "GameId");
+
+                    b.ToTable("GameCategories");
                 });
 
             modelBuilder.Entity("Ludotheque.Models.Illustrator", b =>
@@ -208,13 +216,6 @@ namespace Ludotheque.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Jeu");
-                });
-
-            modelBuilder.Entity("Ludotheque.Models.Category", b =>
-                {
-                    b.HasOne("Ludotheque.Models.Game", null)
-                        .WithMany("Categories")
-                        .HasForeignKey("GameId");
                 });
 
             modelBuilder.Entity("Ludotheque.Models.Game", b =>

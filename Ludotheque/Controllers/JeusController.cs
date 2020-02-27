@@ -30,7 +30,6 @@ namespace Ludotheque.Controllers
             {
                 jeux = jeux.Where(s => s.Nom.Contains(searchString));
             }
-            //TODO: await jeux.ToListAsync a regarder ce que ca fait
             return View(await jeux.ToListAsync());
         }
 

@@ -7,16 +7,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Ludotheque.Data;
 using Ludotheque.Models;
+using Ludotheque.Services;
+using Type = Ludotheque.Models.Type;
 
 namespace Ludotheque.Controllers
 {
     public class CategoriesController : Controller
     {
         private readonly LudothequeContext _context;
+        private GamesService _gameService;
 
         public CategoriesController(LudothequeContext context)
         {
             _context = context;
+            _gameService = new GamesService(context);
+
         }
 
         // GET: Categories
@@ -46,6 +51,7 @@ namespace Ludotheque.Controllers
         // GET: Categories/Create
         public IActionResult Create()
         {
+            ViewBag.Type = _gameService.ListCategories();
             return View();
         }
 
@@ -78,6 +84,7 @@ namespace Ludotheque.Controllers
             {
                 return NotFound();
             }
+            ViewBag.Type = _gameService.ListCategories();
             return View(category);
         }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Ludotheque.Models
 {
@@ -36,9 +37,8 @@ namespace Ludotheque.Models
         [Display(Name = "Temps de jeu")]
         public string GameTime { get; set; }
 
-        [Range(1, 200)]
+        [Range(0, 200)]
         [DataType(DataType.Currency)]
-        [Column(TypeName = "decimal(18, 2)")]
         [Display(Name = "Prix")]
         public decimal Price { get; set; }
 
@@ -64,16 +64,23 @@ namespace Ludotheque.Models
         // Foreign key
 
         [Display(Name = "Difficulté")]
-        public Difficulty Difficulty { get; set; }
+        [AllowNull]
+        public Difficulty? Difficulty { get; set; }
+        [AllowNull]
+        public int? DifficultyId { get; set; }
 
         [Display(Name = "Illustrateur")]
-        public Illustrator Illustrator { get; set; }
+        [AllowNull]
+        public Illustrator? Illustrator { get; set; }
+        [AllowNull]
+        public int? IllustratorId { get; set; }
+
 
         [Display(Name = "Editeur")]
-        public Editor Editor { get; set; }
-        
-        [Display(Name = "Categories")]
-        public ICollection<Category> Categories { get; set; }
+        [AllowNull]
+        public Editor? Editor { get; set; }
+        [AllowNull]
+        public int? EditorId { get; set; }
 
 
 

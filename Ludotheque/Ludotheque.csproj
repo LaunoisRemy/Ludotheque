@@ -12,6 +12,14 @@
     <Compile Remove="Migrations\20200227151110_InitialCreatea.Designer.cs" />
     <Compile Remove="Migrations\20200227155100_InitialCreatea.cs" />
     <Compile Remove="Migrations\20200227155100_InitialCreatea.Designer.cs" />
+    <Compile Remove="Migrations\20200227155916_InitialCreatea.cs" />
+    <Compile Remove="Migrations\20200227155916_InitialCreatea.Designer.cs" />
+    <Compile Remove="Migrations\20200228191445_Initial_Create.cs" />
+    <Compile Remove="Migrations\20200228191445_Initial_Create.Designer.cs" />
+    <Compile Remove="Migrations\20200228195451_Initial_Create.cs" />
+    <Compile Remove="Migrations\20200228195451_Initial_Create.Designer.cs" />
+    <Compile Remove="Migrations\20200228205212_Initial_Create.cs" />
+    <Compile Remove="Migrations\20200228205212_Initial_Create.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

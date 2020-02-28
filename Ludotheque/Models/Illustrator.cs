@@ -13,5 +13,8 @@ namespace Ludotheque.Models
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
+
+        public IList<Game> Games { get; set; }
+
     }
 }

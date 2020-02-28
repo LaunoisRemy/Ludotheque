@@ -64,23 +64,22 @@ namespace Ludotheque.Models
         // Foreign key
 
         [Display(Name = "Difficulté")]
-        [AllowNull]
         public Difficulty? Difficulty { get; set; }
-        [AllowNull]
         public int? DifficultyId { get; set; }
 
         [Display(Name = "Illustrateur")]
-        [AllowNull]
         public Illustrator? Illustrator { get; set; }
-        [AllowNull]
         public int? IllustratorId { get; set; }
 
-
-        [Display(Name = "Editeur")]
-        [AllowNull]
-        public Editor? Editor { get; set; }
-        [AllowNull]
         public int? EditorId { get; set; }
+        [Display(Name = "Editeur")]
+        public Editor? Editor { get; set; }
+
+        public ICollection<ThemesGames> ThemesGames { get; set; }
+        [Display(Name = "Support Materiel")]
+        public ICollection<MaterialSupportsGames> MaterialSupportsGames { get; set; }
+        [Display(Name = "Mécanisme")]
+        public ICollection<MechanismsGames> MechanismsGames { get; set; }
 
 
 

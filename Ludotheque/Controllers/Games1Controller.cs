@@ -7,116 +7,56 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Ludotheque.Data;
 using Ludotheque.Models;
-using Ludotheque.Services;
-using PagedList;
 
 namespace Ludotheque.Controllers
 {
-    public class GamesController : Controller
+    public class Games1Controller : Controller
     {
         private readonly LudothequeContext _context;
-        private GamesService _gameService;
 
-        public GamesController(LudothequeContext context)
+        public Games1Controller(LudothequeContext context)
         {
             _context = context;
-            _gameService = new GamesService(context);
-
         }
 
-        // GET: Games
-        public async Task<IActionResult> Index(string searchString,string sortOrder, string currentFilter, int? pageNumber)
+        // GET: Games1
+        public async Task<IActionResult> Index()
         {
-            //return View(await _context.Jeu.ToListAsync());
-            IQueryable<Game> games;
-
-            ViewBag.CurrentSort = sortOrder;
-
-            // Sort by column
-            ViewBag.NameSortParam = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewBag.DateSortParam = sortOrder == "Date" ? "date_desc" : "Date";
-            ViewBag.PriceSortParam = sortOrder == "Price" ? "price_desc" : "Price";
-            ViewBag.MinPlSortParam = sortOrder == "Min" ? "min_desc" : "Min";
-            ViewBag.MaxPlSortParam = sortOrder == "Max" ? "max_desc" : "Max";
-            ViewBag.AgeSortParam = sortOrder == "Age" ? "age_desc" : "Age";
-            ViewBag.TimeSortParam = sortOrder == "Time" ? "time_desc" : "Time";
-            ViewBag.DiffSortParam = sortOrder == "DIff" ? "diff_desc" : "Diff";
-            ViewBag.IlluSortParam = sortOrder == "Illu" ? "Illu_desc" : "Illu";
-            ViewBag.EditorSortParam = sortOrder == "Editor" ? "editor_desc" : "Editor";
-            ViewBag.CurrentFilter = searchString;
-            
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                games = _gameService.GetGamesByName(searchString);
-                pageNumber = 1;
-            }
-            else
-            {
-                games = _gameService.GetGames();
-                searchString = currentFilter;
-            }
-
-            games = _gameService.SortGames(games, sortOrder);
-            /*IQueryable<GameAllData> gamesAllData= Enumerable.Empty<GameAllData>().AsQueryable();
-            foreach (var game in games)
-            {
-                var idCategories = from relation in _context.GameCategories 
-                    where game.Id == relation.GameId 
-                    select relation.CategoryId;
-
-                var categories = from c in _context.Categories
-                    where idCategories.Contains(c.Id)
-                    select c;
-
-                var themesGame = categories.Where(s => s.Type == Type.Theme); 
-                var MaterialSupportGame = categories.Where(s => s.Type == Type.MaterialSupport); 
-                var MechanismGame = categories.Where(s => s.Type == Type.Mecanism); 
-
-                var gameAllData = new GameAllData();
-                gameAllData.ThemeCategoryList = themesGame;
-                gameAllData.MaterialSupportCategoryList = MaterialSupportGame;
-                gameAllData.MechanismCategoryList = MechanismGame;
-                gamesAllData.Append(gameAllData);
-            }*/
-    
-
-            int pageSize = 3;
-            return View(await PaginatedList<Game>.CreateAsync(games.AsNoTracking(), pageNumber ?? 1, pageSize));
-            //return View(await games.ToListAsync());
+            var ludothequeContext = _context.Games.Include(g => g.Difficulty).Include(g => g.Editor).Include(g => g.Illustrator);
+            return View(await ludothequeContext.ToListAsync());
         }
 
-        // GET: Games/Details/5
+        // GET: Games1/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            else
-            {
-                int _id = (int) id;
-                var game = await _gameService.GetGameById(_id);
-                if (game == null)
-                {
-                    return NotFound();
-                }
 
-                return View(game);
+            var game = await _context.Games
+                .Include(g => g.Difficulty)
+                .Include(g => g.Editor)
+                .Include(g => g.Illustrator)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (game == null)
+            {
+                return NotFound();
             }
 
-
+            return View(game);
         }
 
-        // GET: Games/Create
+        // GET: Games1/Create
         public IActionResult Create()
         {
-            ViewData["DifficultyId"] = new SelectList(_context.Difficulties, "Id", "label");
+            ViewData["DifficultyId"] = new SelectList(_context.Difficulties, "Id", "Id");
             ViewData["EditorId"] = new SelectList(_context.Editors, "Id", "Name");
             ViewData["IllustratorId"] = new SelectList(_context.Illustrators, "Id", "LastName");
             return View();
         }
 
-        // POST: Games/Create
+        // POST: Games1/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -125,7 +65,8 @@ namespace Ludotheque.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _gameService.AddGame(game);
+                _context.Add(game);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["DifficultyId"] = new SelectList(_context.Difficulties, "Id", "Id", game.DifficultyId);
@@ -134,7 +75,7 @@ namespace Ludotheque.Controllers
             return View(game);
         }
 
-        // GET: Games/Edit/5
+        // GET: Games1/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -147,26 +88,24 @@ namespace Ludotheque.Controllers
             {
                 return NotFound();
             }
-            ViewData["DifficultyId"] = new SelectList(_context.Difficulties, "Id", "label", game.DifficultyId);
+            ViewData["DifficultyId"] = new SelectList(_context.Difficulties, "Id", "Id", game.DifficultyId);
             ViewData["EditorId"] = new SelectList(_context.Editors, "Id", "Name", game.EditorId);
             ViewData["IllustratorId"] = new SelectList(_context.Illustrators, "Id", "LastName", game.IllustratorId);
-
             return View(game);
         }
 
-        // POST: Games/Edit/5
+        // POST: Games1/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,MinPlayer,MaxPlayer,MinimumAge,GameTime,Price,ReleaseDate,BuyLink,VideoLink,PictureLink,Validate,DifficultyId,IllustratorId,EditorId")] Game game)
         {
-            decimal prix = game.Price;
             if (id != game.Id)
             {
                 return NotFound();
             }
-            //Todo : Verifier en jquery mais de manière européenne le prix, pour l'instant désactivé
+
             if (ModelState.IsValid)
             {
                 try
@@ -193,7 +132,7 @@ namespace Ludotheque.Controllers
             return View(game);
         }
 
-        // GET: Games/Delete/5
+        // GET: Games1/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -201,8 +140,11 @@ namespace Ludotheque.Controllers
                 return NotFound();
             }
 
-            int _id = (int)id;
-            var game = await _gameService.GetGameById(_id);
+            var game = await _context.Games
+                .Include(g => g.Difficulty)
+                .Include(g => g.Editor)
+                .Include(g => g.Illustrator)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (game == null)
             {
                 return NotFound();
@@ -211,7 +153,7 @@ namespace Ludotheque.Controllers
             return View(game);
         }
 
-        // POST: Games/Delete/5
+        // POST: Games1/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -226,6 +168,5 @@ namespace Ludotheque.Controllers
         {
             return _context.Games.Any(e => e.Id == id);
         }
-
     }
 }

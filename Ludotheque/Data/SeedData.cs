@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Ludotheque.Data;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Ludotheque.Models
@@ -14,53 +15,142 @@ namespace Ludotheque.Models
                 serviceProvider.GetRequiredService<
                     DbContextOptions<LudothequeContext>>()))
             {
-                if (context.Editors.Any())
-                {
-                    return;   // DB has been seeded
-                }
 
-                context.Editors.AddRange(
-                    new Editor
-                    {
-                        Name = "Asmodee",
-                        Description = "Editeur Francais"
-                    }
+                //======================================= Add Editors =======================================
+                if (!context.Editors.Any())
+                {
+                    context.Editors.AddRange(
+                        new Editor
+                        {
+                            Name = "Asmodee",
+                            Description = "Editeur Francais"
+                        }
                     );
-                if (context.Difficulties.Any())
-                {
-                    return;   // DB has been seeded
                 }
 
-                var diff = new Difficulty[]
+                //======================================= Add Difficulty =======================================
+                if (!context.Difficulties.Any())
                 {
-                    new Difficulty
+                    var diff = new Difficulty[]
                     {
-                        label  = Label.Easy
-                    },
-                    new Difficulty
+                        new Difficulty
+                        {
+                            label  = Label.Easy
+                        },
+                        new Difficulty
+                        {
+                            label = Label.Moderate
+                        },
+                        new Difficulty
+                        {
+                            label = Label.Hard
+                        }
+
+                    };
+                    foreach (var d in diff)
                     {
-                        label = Label.Moderate
-                    },
-                    new Difficulty
-                    {
-                        label = Label.Hard
+                        context.Difficulties.Add(d);
                     }
-
-                };
-                foreach (Difficulty d in diff)
-                {
-                    context.Difficulties.Add(d);
+                    context.SaveChanges();
                 }
+
+                //======================================= Add Theme =======================================
+                if (!context.Theme.Any())
+                {
+                    var themes = new Theme[]
+                    {
+                        new Theme
+                        {
+                            Name  = "FarWest"
+                        },
+                        new Theme
+                        {
+                            Name = "Abysse"
+                        },
+                        new Theme
+                        {
+                            Name = "Rêve"
+                        }
+
+                    };
+                    foreach (var t in themes)
+                    {
+                        context.Theme.Add(t);
+                    }
+                }
+
+                //======================================= Add Material Supports =======================================
+                if (!context.MaterialSupport.Any())
+                {
+                    var ms = new MaterialSupport[]
+                    {
+                        new MaterialSupport
+                        {
+                            Name  = "Dé"
+                        },
+                        new MaterialSupport
+                        {
+                            Name = "Cartes"
+                        },
+                        new MaterialSupport
+                        {
+                            Name = "Plateau"
+                        }
+
+                    };
+                    foreach (var m in ms)
+                    {
+                        context.MaterialSupport.Add(m);
+                    }
+                }
+
+                //======================================= Add Mechanisms =======================================
+                // Look for any games.
+                if (!context.Mechanism.Any())
+                {
+                    var mecha = new Mechanism[]
+                    {
+                        new Mechanism
+                        {
+                            Name  = "Triche"
+                        },
+                        new Mechanism
+                        {
+                            Name = "Mensonges"
+                        },
+                        new Mechanism
+                        {
+                            Name = "Collaboration"
+                        },
+                        new Mechanism
+                        {
+                            Name = "Economie"
+                        }
+
+                    };
+                    foreach (var m in mecha)
+                    {
+                        context.Mechanism.Add(m);
+                    }
+                }
+
                 context.SaveChanges();
 
-
-                // Look for any games.
-                if (context.Games.Any())
+                //======================================= Add Games =======================================
+                var difficultiesList = context.Difficulties;
+                var mechanismsList = from m in context.Mechanism
+                    where m.Name == "Collaboration" || m.Name == "Economie"
+                                     select m;
+                ICollection<Mechanism> AbyssMechanisms = new List<Mechanism>();
+                foreach (var mechanism in mechanismsList)
                 {
-                    return;   // DB has been seeded
+                 AbyssMechanisms.Add(mechanism);   
                 }
 
-                context.Games.AddRange(
+                // Look for any games.
+                if (!context.Games.Any())
+                {
+                    context.Games.AddRange(
                     new Game
                     {
                         Name = "Abyss",
@@ -69,7 +159,7 @@ namespace Ludotheque.Models
                         MaxPlayer = 4,
                         MinPlayer = 2,
                         MinimumAge = 14,
-                        DifficultyId = diff.Single( s => s.label == Label.Hard).Id
+                        DifficultyId = difficultiesList.Single(s => s.label == Label.Hard).Id
                     },
                     new Game
                     {
@@ -79,7 +169,7 @@ namespace Ludotheque.Models
                         MaxPlayer = 10,
                         MinPlayer = 5,
                         MinimumAge = 18
-                    }, 
+                    },
                     new Game
                     {
                         Name = "Complot",
@@ -114,7 +204,9 @@ namespace Ludotheque.Models
                         MinimumAge = 13,
                     }
                 );
-                context.SaveChanges();
+                    context.SaveChanges();
+                }
+                
             }
         }
     }

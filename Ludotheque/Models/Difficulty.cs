@@ -22,6 +22,8 @@ namespace Ludotheque.Models
         public int Id { get; set; }
         [Required]
         public Label label { get; set; }
+
+        public IList<Game> Games { get; set; }
     }
 
 

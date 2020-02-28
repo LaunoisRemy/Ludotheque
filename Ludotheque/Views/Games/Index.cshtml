@@ -48,15 +48,20 @@
                 Lien image
             </th>
             <th>
-                Difficulties
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DiffSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Difficulté</a>
+
             </th>
             <th>
-                Difficulties
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["EditorSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Editor</a>
+
             </th>
             <th>
-                Theme
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["IlluSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Illustrator</a>
+
+            </th
+            <th>
+
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -88,16 +93,14 @@
                 @Html.DisplayFor(modelItem => item.PictureLink)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DifficultyId)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Difficulty.label)
             </td>
-            <div class="form-group">
-                <label class="control-label">Theme</label>
-                <select class="form-control" asp-items="ViewBag.Theme">
-                </select>
-            </div>
+            <td>
+                @Html.DisplayFor(modelItem => item.Editor.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Illustrator.LastName)
+            </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

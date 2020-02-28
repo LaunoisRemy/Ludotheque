@@ -9,7 +9,6 @@ using Ludotheque.Data;
 using Ludotheque.Models;
 using Ludotheque.Services;
 using PagedList;
-using Type = Ludotheque.Models.Type;
 
 namespace Ludotheque.Services
 {
@@ -31,8 +30,8 @@ namespace Ludotheque.Services
         /// <returns>A list of all games in Database </returns>
         public IQueryable<Game> GetGames()
         {
-            return from g in _context.Games
-                select g;
+            return _context.Games.Include(g => g.Difficulty).Include(g => g.Editor).Include(g => g.Illustrator);
+
         }
         /// <summary>
         /// Get all games that contain the searchString in name
@@ -50,7 +49,11 @@ namespace Ludotheque.Services
         }
         public async Task<Game> GetGameById(int id)
         {
-            Game game = await _context.Games.FirstOrDefaultAsync(m => m.Id == id);
+            Game game = await _context.Games
+                .Include(g => g.Difficulty)
+                .Include(g => g.Editor)
+                .Include(g => g.Illustrator)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             return game;
         }

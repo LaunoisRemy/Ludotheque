@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 
 namespace Ludotheque.Models
 {
-    public class Editor
+    public class Theme
     {
         public int Id { get; set; }
         [Required]
+        [Display(Name = "Nom")]
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public IList<Game> Games { get; set; }
+        public ICollection<ThemesGames> ThemesGames { get; set; }
+
     }
 }

@@ -44,7 +44,32 @@ namespace Ludotheque.Data
                 .HasKey(c => new { c.GameId, c.MaterialSupportId });
             modelBuilder.Entity<MechanismsGames>()
                 .HasKey(c => new { c.GameId, c.MechanismId });
+            modelBuilder.Entity<ThemesGames>()
+                .HasOne(bc => bc.Theme)
+                .WithMany(b => b.ThemesGames)
+                .HasForeignKey(bc => bc.ThemeId);
+            modelBuilder.Entity<ThemesGames>()
+                .HasOne(bc => bc.Game)
+                .WithMany(c => c.ThemesGames)
+                .HasForeignKey(bc => bc.GameId);
 
+            modelBuilder.Entity<MaterialSupportsGames>()
+                .HasOne(bc => bc.MaterialSupport)
+                .WithMany(b => b.MaterialSupportsGames)
+                .HasForeignKey(bc => bc.MaterialSupportId);
+            modelBuilder.Entity<MaterialSupportsGames>()
+                .HasOne(bc => bc.Game)
+                .WithMany(c => c.MaterialSupportsGames)
+                .HasForeignKey(bc => bc.GameId);
+
+            modelBuilder.Entity<MechanismsGames>()
+                .HasOne(bc => bc.Mechanism)
+                .WithMany(b => b.MechanismsGames)
+                .HasForeignKey(bc => bc.MechanismId);
+            modelBuilder.Entity<MechanismsGames>()
+                .HasOne(bc => bc.Game)
+                .WithMany(c => c.MechanismsGames)
+                .HasForeignKey(bc => bc.GameId);
         }
 
 

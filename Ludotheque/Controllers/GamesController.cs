@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Ludotheque.Data;
 using Ludotheque.Models;
 using Ludotheque.Services;
-using PagedList;
 
 namespace Ludotheque.Controllers
 {
@@ -16,11 +15,13 @@ namespace Ludotheque.Controllers
     {
         private readonly LudothequeContext _context;
         private GamesService _gameService;
+        private GameAllDataService _gameAllDataService;
 
         public GamesController(LudothequeContext context)
         {
             _context = context;
-            _gameService = new GamesService(context);
+            _gameService = new GamesService(context);;
+            _gameAllDataService = new GameAllDataService(context);;
 
         }
 
@@ -44,44 +45,38 @@ namespace Ludotheque.Controllers
             ViewBag.IlluSortParam = sortOrder == "Illu" ? "Illu_desc" : "Illu";
             ViewBag.EditorSortParam = sortOrder == "Editor" ? "editor_desc" : "Editor";
             ViewBag.CurrentFilter = searchString;
-            
+
+            GamesIndexData gamesAllData = new GamesIndexData();
+
             if (!String.IsNullOrEmpty(searchString))
             {
                 games = _gameService.GetGamesByName(searchString);
+                //gamesAllData = await  _gameAllDataService.GetGamesByName(searchString);
                 pageNumber = 1;
             }
             else
             {
                 games = _gameService.GetGames();
+                //gamesAllData = await _gameAllDataService.GetGamesAndCategories();
                 searchString = currentFilter;
             }
 
             games = _gameService.SortGames(games, sortOrder);
-            /*IQueryable<GameAllData> gamesAllData= Enumerable.Empty<GameAllData>().AsQueryable();
-            foreach (var game in games)
-            {
-                var idCategories = from relation in _context.GameCategories 
-                    where game.Id == relation.GameId 
-                    select relation.CategoryId;
+            //gamesAllData = _gameAllDataService.SortGamesIndexData(gamesAllData, sortOrder);
 
-                var categories = from c in _context.Categories
-                    where idCategories.Contains(c.Id)
-                    select c;
-
-                var themesGame = categories.Where(s => s.Type == Type.Theme); 
-                var MaterialSupportGame = categories.Where(s => s.Type == Type.MaterialSupport); 
-                var MechanismGame = categories.Where(s => s.Type == Type.Mecanism); 
-
-                var gameAllData = new GameAllData();
-                gameAllData.ThemeCategoryList = themesGame;
-                gameAllData.MaterialSupportCategoryList = MaterialSupportGame;
-                gameAllData.MechanismCategoryList = MechanismGame;
-                gamesAllData.Append(gameAllData);
-            }*/
-    
-
+            //games =  gamesAllData.Games.AsQueryable();
             int pageSize = 3;
-            return View(await PaginatedList<Game>.CreateAsync(games.AsNoTracking(), pageNumber ?? 1, pageSize));
+            PaginatedList<Game> pl =
+                await PaginatedList<Game>.CreateAsync(games, pageNumber ?? 1, pageSize);
+            var gTest = from g in games
+                where pl.Contains(g)
+                select g;
+            
+            gamesAllData = await _gameAllDataService.GetGamesAndCategories(gTest);
+            gamesAllData.PageIndex = pl.PageIndex;
+            gamesAllData.TotalPages = pl.TotalPages;
+
+            return View(gamesAllData);
             //return View(await games.ToListAsync());
         }
 
@@ -150,8 +145,8 @@ namespace Ludotheque.Controllers
             ViewData["DifficultyId"] = new SelectList(_context.Difficulties, "Id", "label", game.DifficultyId);
             ViewData["EditorId"] = new SelectList(_context.Editors, "Id", "Name", game.EditorId);
             ViewData["IllustratorId"] = new SelectList(_context.Illustrators, "Id", "LastName", game.IllustratorId);
-
-            return View(game);
+            var t =  await _gameAllDataService.GetGameAndCategories(game);
+            return View(t);
         }
 
         // POST: Games/Edit/5

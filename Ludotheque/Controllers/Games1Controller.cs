@@ -7,23 +7,30 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Ludotheque.Data;
 using Ludotheque.Models;
+using Ludotheque.Services;
 
 namespace Ludotheque.Controllers
 {
     public class Games1Controller : Controller
     {
         private readonly LudothequeContext _context;
+        private GameAllDataService _gameService;
+
 
         public Games1Controller(LudothequeContext context)
         {
             _context = context;
+            _gameService = new GameAllDataService(context);
+
         }
 
         // GET: Games1
         public async Task<IActionResult> Index()
         {
-            var ludothequeContext = _context.Games.Include(g => g.Difficulty).Include(g => g.Editor).Include(g => g.Illustrator);
-            return View(await ludothequeContext.ToListAsync());
+            var gamesAllData = await _gameService.GetGamesAndCategories();
+
+            //var ludothequeContext = _context.Games.Include(g => g.Difficulty).Include(g => g.Editor).Include(g => g.Illustrator);
+            return View(gamesAllData);
         }
 
         // GET: Games1/Details/5

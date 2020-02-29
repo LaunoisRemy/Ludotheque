@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ludotheque.Migrations
 {
     [DbContext(typeof(LudothequeContext))]
-    [Migration("20200228205913_Initial_Create")]
+    [Migration("20200229153323_Initial_Create")]
     partial class Initial_Create
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -217,11 +217,16 @@ namespace Ludotheque.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("GameId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GameId");
 
                     b.ToTable("Themes");
                 });
@@ -244,7 +249,7 @@ namespace Ludotheque.Migrations
             modelBuilder.Entity("Ludotheque.Models.Game", b =>
                 {
                     b.HasOne("Ludotheque.Models.Difficulty", "Difficulty")
-                        .WithMany()
+                        .WithMany("Games")
                         .HasForeignKey("DifficultyId");
 
                     b.HasOne("Ludotheque.Models.Editor", "Editor")
@@ -258,13 +263,13 @@ namespace Ludotheque.Migrations
 
             modelBuilder.Entity("Ludotheque.Models.MaterialSupportsGames", b =>
                 {
-                    b.HasOne("Ludotheque.Models.Game", null)
+                    b.HasOne("Ludotheque.Models.Game", "Game")
                         .WithMany("MaterialSupportsGames")
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Ludotheque.Models.MaterialSupport", null)
+                    b.HasOne("Ludotheque.Models.MaterialSupport", "MaterialSupport")
                         .WithMany("MaterialSupportsGames")
                         .HasForeignKey("MaterialSupportId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -273,28 +278,35 @@ namespace Ludotheque.Migrations
 
             modelBuilder.Entity("Ludotheque.Models.MechanismsGames", b =>
                 {
-                    b.HasOne("Ludotheque.Models.Game", null)
+                    b.HasOne("Ludotheque.Models.Game", "Game")
                         .WithMany("MechanismsGames")
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Ludotheque.Models.Mechanism", null)
+                    b.HasOne("Ludotheque.Models.Mechanism", "Mechanism")
                         .WithMany("MechanismsGames")
                         .HasForeignKey("MechanismId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Ludotheque.Models.Theme", b =>
+                {
+                    b.HasOne("Ludotheque.Models.Game", "Game")
+                        .WithMany()
+                        .HasForeignKey("GameId");
+                });
+
             modelBuilder.Entity("Ludotheque.Models.ThemesGames", b =>
                 {
-                    b.HasOne("Ludotheque.Models.Game", null)
+                    b.HasOne("Ludotheque.Models.Game", "Game")
                         .WithMany("ThemesGames")
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Ludotheque.Models.Theme", null)
+                    b.HasOne("Ludotheque.Models.Theme", "Theme")
                         .WithMany("ThemesGames")
                         .HasForeignKey("ThemeId")
                         .OnDelete(DeleteBehavior.Cascade)

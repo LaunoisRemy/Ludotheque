@@ -1,5 +1,4 @@
-﻿@model IEnumerable<Ludotheque.Models.Game>
-
+﻿@model Ludotheque.Models.GamesIndexData
 @{
     ViewData["Title"] = "Index";
 }
@@ -13,55 +12,64 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Nom
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                Description
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MinPlayer)
+                MinPlayer
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MaxPlayer)
+                MaxPlayer
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MinimumAge)
+                MinimumAge
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.GameTime)
+                GameTime
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                Price
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ReleaseDate)
+                ReleaseDate
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BuyLink)
+                BuyLink
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.VideoLink)
+                VideoLink
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PictureLink)
+                PictureLink
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Validate)
+                Validate
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Difficulty.label)
+                Difficulty
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Illustrator)
+                Illustrator
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Editor)
+                Editor
+            </th>
+            <th>
+                Theme
+            </th>
+            <th>
+                Ms
+            </th>
+            <th>
+                Mecha
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Games) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
@@ -100,13 +108,31 @@
                 @Html.DisplayFor(modelItem => item.Validate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Difficulty.label)
+                @Html.DisplayFor(modelItem => item.Difficulty.Id)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Illustrator.LastName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Editor.Name)
+            </td>
+            <td>
+                @foreach (var t in item.ThemesGames)
+                {
+                    @t.Theme.Name <br />
+                }
+            </td>
+            <td>
+                @foreach (var t in item.MaterialSupportsGames)
+                {
+                    @t.MaterialSupport.Name <br />
+                }
+            </td>
+            <td>
+                @foreach (var t in item.MechanismsGames)
+                {
+                    @t.Mechanism.Name <br />
+                }
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

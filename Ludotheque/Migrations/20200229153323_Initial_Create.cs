@@ -76,20 +76,6 @@ namespace Ludotheque.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Themes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: false),
-                    Description = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Themes", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Games",
                 columns: table => new
                 {
@@ -183,6 +169,27 @@ namespace Ludotheque.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Themes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: false),
+                    Description = table.Column<string>(nullable: true),
+                    GameId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Themes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Themes_Games_GameId",
+                        column: x => x.GameId,
+                        principalTable: "Games",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ThemesGames",
                 columns: table => new
                 {
@@ -232,6 +239,11 @@ namespace Ludotheque.Migrations
                 column: "MechanismId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Themes_GameId",
+                table: "Themes",
+                column: "GameId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ThemesGames_ThemeId",
                 table: "ThemesGames",
                 column: "ThemeId");
@@ -255,10 +267,10 @@ namespace Ludotheque.Migrations
                 name: "Mechanisms");
 
             migrationBuilder.DropTable(
-                name: "Games");
+                name: "Themes");
 
             migrationBuilder.DropTable(
-                name: "Themes");
+                name: "Games");
 
             migrationBuilder.DropTable(
                 name: "Difficulties");

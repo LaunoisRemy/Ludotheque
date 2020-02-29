@@ -12,5 +12,9 @@ namespace Ludotheque.Models
         public int GameId { get; set; }
         [Key]
         public int MechanismId { get; set; }
+
+        public Game Game { get; set; }
+        public Mechanism Mechanism { get; set; }
+
     }
 }

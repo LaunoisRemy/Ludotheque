@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Ludotheque.Data;
 using Ludotheque.Models;
 using Ludotheque.Services;
-using PagedList;
 
 namespace Ludotheque.Services
 {
@@ -32,7 +31,10 @@ namespace Ludotheque.Services
         {
             return _context.Games.Include(g => g.Difficulty).Include(g => g.Editor).Include(g => g.Illustrator);
 
+
         }
+
+
         /// <summary>
         /// Get all games that contain the searchString in name
         /// </summary>
@@ -116,35 +118,20 @@ namespace Ludotheque.Services
             return games;
         }
 
-        //For now this methods are in GameService because a Category is related to a Game but lets think
-        //Todo : Autre services ?
-        /// <summary>
-        /// Give a lsit of all type of a category
-        /// </summary>
-        /// <returns>SelectList of all Type (Enum) of a category</returns>
-        public SelectList ListCategories()
+        public IQueryable<Game> GetGamesPages(IQueryable<Game> games, int pageNumber, int pageSize)
         {
-            return new SelectList(
-                new List<SelectListItem>
-                {
-                    new SelectListItem { Selected = true, Text = "Theme", Value = "0"},
-                    new SelectListItem { Selected = false, Text = "Support Materiel", Value = "2"},
-                    new SelectListItem { Selected = false, Text = "Mécanisme", Value = "1"},
-                }, "Value", "Text", 1);
+            var PageIndex = pageNumber;
+            var count = games.Count();
+            var items = games.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            var TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+            var hasPrevious = (PageIndex > 1);
+            var hasNext = (PageIndex < TotalPages);
+
+            return items.AsQueryable();
         }
 
-        /*private List<Type> GetCategoryGamesByLabel(IQueryable<Game> games,Type label)
-        {
-            var categories;
-            foreach (var g in games)
-            {
-                 from g in games
-                
-                    select g;
-            }
-            return null;
-        }*/
-       
+
+
 
     }
 }

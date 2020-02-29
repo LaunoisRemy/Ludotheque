@@ -16,5 +16,8 @@ namespace Ludotheque.Models
 
         public ICollection<ThemesGames> ThemesGames { get; set; }
 
+        public Game Game { get; set; }
+
+
     }
 }

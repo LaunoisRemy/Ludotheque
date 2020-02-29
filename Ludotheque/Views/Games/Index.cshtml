@@ -1,4 +1,4 @@
-﻿@model PaginatedList<Ludotheque.Models.Game>
+﻿@model Ludotheque.Models.GamesIndexData
 @{
     ViewData["Title"] = "Index";
 }
@@ -58,60 +58,88 @@
             <th>
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["IlluSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Illustrator</a>
 
-            </th
+            </th>
+            <th>
+                Themes
+            </th>
+            <th>
+                Supports materiel
+            </th>
+            <th>
+                Mecanismes
+            </th>
             <th>
 
             </th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Games)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MinPlayer)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MaxPlayer)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MinimumAge)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.GameTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReleaseDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PictureLink)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Difficulty.label)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Editor.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Illustrator.LastName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MinPlayer)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MaxPlayer)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MinimumAge)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GameTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReleaseDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PictureLink)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Difficulty.label)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Editor.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Illustrator.LastName)
+                </td>
+                <td>
+                    @foreach (var t in item.ThemesGames)
+                    {
+                        @t.Theme.Name <br />
+                    }
+                </td>
+                <td>
+                    @foreach (var t in item.MaterialSupportsGames)
+                    {
+                        @t.MaterialSupport.Name <br />
+                    }
+                </td>
+                <td>
+                    @foreach (var t in item.MechanismsGames)
+                    {
+                        @t.Mechanism.Name <br />
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
 
-        </tr>
+            </tr>
         }
     </tbody>
 </table>
 @{
+
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }

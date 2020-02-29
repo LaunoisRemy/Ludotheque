@@ -20,11 +20,17 @@
     <Compile Remove="Migrations\20200228195451_Initial_Create.Designer.cs" />
     <Compile Remove="Migrations\20200228205212_Initial_Create.cs" />
     <Compile Remove="Migrations\20200228205212_Initial_Create.Designer.cs" />
+    <Compile Remove="Migrations\20200228205913_Initial_Create.cs" />
+    <Compile Remove="Migrations\20200228205913_Initial_Create.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="jquery-globalize" Version="1.4.2" />
     <PackageReference Include="jQuery.Validation.Globalize" Version="1.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.2">

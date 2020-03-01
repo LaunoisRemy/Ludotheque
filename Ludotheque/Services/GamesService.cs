@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Ludotheque.Data;
 using Ludotheque.Models;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 
@@ -33,7 +34,9 @@ namespace Ludotheque.Services
         /// <returns>A list of all games in Database </returns>
         public IQueryable<Game> GetGames()
         {
-            return _context.Games.Include(g => g.Difficulty).Include(g => g.Editor).Include(g => g.Illustrator);
+            return _context.Games.Include(g => g.Difficulty)
+                .Include(g => g.Editor)
+                .Include(g => g.Illustrator);
 
 
         }
@@ -67,7 +70,36 @@ namespace Ludotheque.Services
 
             return game;
         }
+        /// <summary>
+        /// Get game by editor
+        /// </summary>
+        /// <param name="id"> id editor of the games we looking for</param>
+        /// <returns> game for asynchrone</returns>
+        public IQueryable<Game> GetGamesByEditor(int id)
+        {
+            return _context.Games.Include(g => g.Difficulty)
+                .Include(g => g.Editor)
+                .Include(g => g.Illustrator)
+                .Where(c =>c.EditorId == id);
 
+        }
+        /// <summary>
+        /// Get game by theme
+        /// </summary>
+        /// <param name="id"> id theme of the games we looking for</param>
+        /// <returns> game for asynchrone</returns>
+        public IQueryable<Game> GetGamesByTheme(int id)
+        {
+            var idGames= from gt in _context.ThemesGames
+                where gt.ThemeId == id
+                select gt.Game.Id;
+
+            return _context.Games.Include(g => g.Difficulty)
+                .Include(g => g.Editor)
+                .Include(g => g.Illustrator)
+                .Where(c => idGames.Contains(c.Id));
+
+        }
         /// <summary>
         /// Add game in database
         /// </summary>
@@ -329,10 +361,6 @@ namespace Ludotheque.Services
                 }
             }
         }
-
-
-
-
 
 
     }

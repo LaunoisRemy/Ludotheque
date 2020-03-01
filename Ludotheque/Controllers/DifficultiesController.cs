@@ -46,6 +46,7 @@ namespace Ludotheque.Controllers
         // GET: Difficulties/Create
         public IActionResult Create()
         {
+            ViewData["Difficulty"] = new SelectList(_context.Difficulties, "Id", "label");
             return View();
         }
 
@@ -78,6 +79,7 @@ namespace Ludotheque.Controllers
             {
                 return NotFound();
             }
+            ViewData["Difficulty"] = new SelectList(_context.Difficulties, "Id", "label");
             return View(difficulty);
         }
 

@@ -32,9 +32,68 @@ namespace Ludotheque.Controllers
             //Todo : Si ecran trop petit afficher des colonnes en moins
             //Todo : limiter le nombre de catégories montrées a 3
             //Todo : Probleme si critères vide sort ne trie pas bien
-            //return View(await _context.Jeu.ToListAsync());
             IQueryable<Game> games;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                games = _gameService.GetGamesByName(searchString);
+                pageNumber = 1;
+            }
+            else
+            {
+                games = _gameService.GetGames();
+                searchString = currentFilter;
+            }
 
+            GamesIndexData gamesAllData = await SortGames(searchString,sortOrder,currentFilter,pageNumber,games);
+
+
+            return View(gamesAllData);
+        }
+        public async Task<IActionResult> Editor(int id, string sortOrder, string currentFilter, int? pageNumber)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var editor = await _context.Editors
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (editor == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.EditorName = editor.Name;
+            ViewBag.EditorDesc = editor.Description;
+
+            IQueryable<Game> games = _gameService.GetGamesByEditor(id);
+            GamesIndexData gamesAllData = await SortGames(currentFilter, sortOrder, currentFilter, pageNumber, games);
+            return View(gamesAllData);
+        }
+        public async Task<IActionResult> Theme(int id, string sortOrder, string currentFilter, int? pageNumber)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var t = await _context.Theme
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (t == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.ThemeName = t.Name;
+            ViewBag.ThemeDesc = t.Description;
+
+            IQueryable<Game> games = _gameService.GetGamesByTheme(id);
+            GamesIndexData gamesAllData = await SortGames(currentFilter, sortOrder, currentFilter, pageNumber, games);
+            return View(gamesAllData);
+        }
+
+        public async Task<GamesIndexData> SortGames(string searchString, string sortOrder, string currentFilter, int? pageNumber, IQueryable<Game> games)
+        {
             ViewBag.CurrentSort = sortOrder;
 
             // Sort by column
@@ -52,18 +111,7 @@ namespace Ludotheque.Controllers
 
             GamesIndexData gamesAllData = new GamesIndexData();
 
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                games = _gameService.GetGamesByName(searchString);
-                //gamesAllData = await  _gameAllDataService.GetGamesByName(searchString);
-                pageNumber = 1;
-            }
-            else
-            {
-                games = _gameService.GetGames();
-                //gamesAllData = await _gameAllDataService.GetGamesAndCategories();
-                searchString = currentFilter;
-            }
+
 
             games = _gameService.SortGames(games, sortOrder);
             //gamesAllData = _gameAllDataService.SortGamesIndexData(gamesAllData, sortOrder);
@@ -72,16 +120,15 @@ namespace Ludotheque.Controllers
             int pageSize = 3;
             PaginatedList<Game> pl =
                 await PaginatedList<Game>.CreateAsync(games, pageNumber ?? 1, pageSize);
-            var gTest = from g in games
+            var gamesTmp = from g in games
                 where pl.Contains(g)
                 select g;
-            
-            gamesAllData = await _gameAllDataService.GetGamesAndCategories(gTest);
+
+            gamesAllData = await _gameAllDataService.GetGamesAndCategories(gamesTmp);
             gamesAllData.PageIndex = pl.PageIndex;
             gamesAllData.TotalPages = pl.TotalPages;
+            return gamesAllData;
 
-            return View(gamesAllData);
-            //return View(await games.ToListAsync());
         }
 
         // GET: Games/Details/5

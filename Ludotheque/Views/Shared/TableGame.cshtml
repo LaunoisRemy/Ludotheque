@@ -1,0 +1,134 @@
+﻿@model Ludotheque.Models.GamesIndexData
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+
+}
+
+@RenderSection("Head", true)
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Nom</a>
+            </th>
+
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["MinPlSortParam"]" asp-route-currentFilter="@ViewBag.CurrentFilter">Nombre de joueur minimum </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["MaxPlSortParam"]" asp-route-currentFilter="@ViewBag.CurrentFilter">Nombre de joueur maximum </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["AgeSortParam"]" asp-route-currentFilter="@ViewBag.CurrentFilter">Age minimum </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["TimeSortParam"]" asp-route-currentFilter="@ViewBag.CurrentFilter">Temps de jeu </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Prix</a>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Date Sortie</a>
+            </th>
+            <th>
+                Lien image
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DiffSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Difficulté</a>
+
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["EditorSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Editor</a>
+
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["IlluSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Illustrator</a>
+
+            </th>
+            <th>
+                Themes
+            </th>
+            <th>
+                Supports materiel
+            </th>
+            <th>
+                Mecanismes
+            </th>
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Games)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MinPlayer)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MaxPlayer)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MinimumAge)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GameTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReleaseDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PictureLink)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Difficulty.label)
+                </td>
+                <td>
+                    <a asp-action="Editor" asp-route-id="@item.EditorId">
+                        @Html.DisplayFor(modelItem => item.Editor.Name)
+                    </a>
+                    
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Illustrator.LastName)
+                </td>
+                <td>
+                    @foreach (var t in item.ThemesGames)
+                    {
+                        <a asp-action="Theme" asp-route-id="@t.ThemeId">
+                            @t.Theme.Name <br />
+                        </a>
+                        
+                    }
+                </td>
+                <td>
+                    @foreach (var t in item.MaterialSupportsGames)
+                    {
+                        @t.MaterialSupport.Name <br />
+                    }
+                </td>
+                <td>
+                    @foreach (var t in item.MechanismsGames)
+                    {
+                        @t.Mechanism.Name <br />
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+@RenderSection("Bottom", true)
+

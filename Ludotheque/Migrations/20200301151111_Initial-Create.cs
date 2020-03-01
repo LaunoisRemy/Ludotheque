@@ -2,7 +2,7 @@
 
 namespace Ludotheque.Migrations
 {
-    public partial class Initial_Create : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -86,7 +86,7 @@ namespace Ludotheque.Migrations
                     MinPlayer = table.Column<int>(nullable: false),
                     MaxPlayer = table.Column<int>(nullable: false),
                     MinimumAge = table.Column<int>(nullable: false),
-                    GameTime = table.Column<string>(nullable: true),
+                    GameTime = table.Column<int>(nullable: false),
                     Price = table.Column<decimal>(nullable: false),
                     ReleaseDate = table.Column<int>(nullable: false),
                     BuyLink = table.Column<string>(nullable: true),

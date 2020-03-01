@@ -72,8 +72,8 @@ namespace Ludotheque.Migrations
                     b.Property<int?>("EditorId")
                         .HasColumnType("int");
 
-                    b.Property<string>("GameTime")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("GameTime")
+                        .HasColumnType("int");
 
                     b.Property<int?>("IllustratorId")
                         .HasColumnType("int");

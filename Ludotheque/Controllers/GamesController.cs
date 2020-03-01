@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Ludotheque.Data;
 using Ludotheque.Models;
+using Ludotheque.Models;
 using Ludotheque.Services;
 
 namespace Ludotheque.Controllers
@@ -28,6 +29,8 @@ namespace Ludotheque.Controllers
         // GET: Games
         public async Task<IActionResult> Index(string searchString,string sortOrder, string currentFilter, int? pageNumber)
         {
+            //Todo : Si ecran trop petit afficher des colonnes en moins
+            //Todo : Probleme si critères vide sort ne trie pas bien
             //return View(await _context.Jeu.ToListAsync());
             IQueryable<Game> games;
 
@@ -136,57 +139,82 @@ namespace Ludotheque.Controllers
             {
                 return NotFound();
             }
-
-            var game = await _context.Games.FindAsync(id);
+            var game = await _gameService.GetGameWithCategories((int) id);
+            //var game = await _context.Games.FindAsync(id);
             if (game == null)
             {
                 return NotFound();
             }
+            var viewModel= _gameService.PopulateAssignedThemesData(game);
+            ViewData["Theme"] = viewModel;
+            viewModel = _gameService.PopulateAssignedMsData(game);
+            ViewData["MaterialSupport"] = viewModel;
+            viewModel = _gameService.PopulateAssignedMechasData(game);
+            ViewData["Mechanisms"] = viewModel;
+
             ViewData["DifficultyId"] = new SelectList(_context.Difficulties, "Id", "label", game.DifficultyId);
             ViewData["EditorId"] = new SelectList(_context.Editors, "Id", "Name", game.EditorId);
             ViewData["IllustratorId"] = new SelectList(_context.Illustrators, "Id", "LastName", game.IllustratorId);
-            var t =  await _gameAllDataService.GetGameAndCategories(game);
-            return View(t);
+            //var t =  await _gameAllDataService.GetGameAndCategories(game);
+            return View(game);
         }
+
 
         // POST: Games/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,MinPlayer,MaxPlayer,MinimumAge,GameTime,Price,ReleaseDate,BuyLink,VideoLink,PictureLink,Validate,DifficultyId,IllustratorId,EditorId")] Game game)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,MinPlayer,MaxPlayer,MinimumAge,GameTime,Price,ReleaseDate,BuyLink,VideoLink,PictureLink,Validate,DifficultyId,IllustratorId,EditorId")] Game game, string[] selectedThemes, string[] selectedMs, string[] selectedMecha)
         {
             decimal prix = game.Price;
             if (id != game.Id)
             {
                 return NotFound();
             }
-            //Todo : Verifier en jquery mais de manière européenne le prix, pour l'instant désactivé
-            if (ModelState.IsValid)
+
+            var gameToUpdate = await _gameService.GetGameWithCategories(id);
+
+            if (await TryUpdateModelAsync<Game>(
+                gameToUpdate,
+                "",
+                i => i.Name, i => i.Description, i => i.MinPlayer, i => i.MaxPlayer
+                , i => i.MinimumAge, i => i.GameTime, i => i.Price
+                , i => i.ReleaseDate, i => i.BuyLink, i => i.VideoLink,
+                i => i.PictureLink, i => i.Validate, i => i.DifficultyId, i => i.IllustratorId, i => i.EditorId))
             {
+                _gameService.UpdateGamesThemes(selectedThemes, gameToUpdate);
+                _gameService.UpdateGamesMaterialSupport(selectedMs, gameToUpdate);
+                _gameService.UpdateGamesMechanisms(selectedMecha, gameToUpdate);
+
                 try
                 {
-                    _context.Update(game);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateException /* ex */)
                 {
-                    if (!GameExists(game.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    //Log the error (uncomment ex variable name and write a log.)
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                                                 "Try again, and if the problem persists, " +
+                                                 "see your system administrator.");
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DifficultyId"] = new SelectList(_context.Difficulties, "Id", "Id", game.DifficultyId);
-            ViewData["EditorId"] = new SelectList(_context.Editors, "Id", "Name", game.EditorId);
-            ViewData["IllustratorId"] = new SelectList(_context.Illustrators, "Id", "LastName", game.IllustratorId);
-            return View(game);
+            _gameService.UpdateGamesThemes(selectedThemes, gameToUpdate);
+            _gameService.UpdateGamesMaterialSupport(selectedMs, gameToUpdate);
+            _gameService.UpdateGamesMechanisms(selectedMecha, gameToUpdate);
+
+            var viewModel = _gameService.PopulateAssignedThemesData(gameToUpdate);
+            ViewData["Theme"] = viewModel;
+            viewModel = _gameService.PopulateAssignedMechasData(gameToUpdate);
+            ViewData["Mechanisms"] = viewModel;
+            viewModel = _gameService.PopulateAssignedMsData(gameToUpdate);
+            ViewData["MaterialSupport"] = viewModel;
+            viewModel = _gameService.PopulateAssignedMechasData(gameToUpdate);
+            ViewData["Mechanisms"] = viewModel;
+            return View(gameToUpdate);
         }
+
 
         // GET: Games/Delete/5
         public async Task<IActionResult> Delete(int? id)

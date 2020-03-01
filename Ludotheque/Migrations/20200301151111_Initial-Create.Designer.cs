@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ludotheque.Migrations
 {
     [DbContext(typeof(LudothequeContext))]
-    [Migration("20200229153323_Initial_Create")]
-    partial class Initial_Create
+    [Migration("20200301151111_Initial-Create")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -74,8 +74,8 @@ namespace Ludotheque.Migrations
                     b.Property<int?>("EditorId")
                         .HasColumnType("int");
 
-                    b.Property<string>("GameTime")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("GameTime")
+                        .HasColumnType("int");
 
                     b.Property<int?>("IllustratorId")
                         .HasColumnType("int");

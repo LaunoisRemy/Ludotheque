@@ -7,10 +7,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Ludotheque.Data;
 using Ludotheque.Models;
-using Ludotheque.Services;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+
 
 namespace Ludotheque.Services
 {
+    /// <summary>
+    /// Class for methods on the object Game
+    /// </summary>
     public class GamesService
     {
         private readonly LudothequeContext _context;
@@ -34,7 +38,6 @@ namespace Ludotheque.Services
 
         }
 
-
         /// <summary>
         /// Get all games that contain the searchString in name
         /// </summary>
@@ -49,6 +52,11 @@ namespace Ludotheque.Services
             }
             return gamesList.Where(s => s.Name.Contains(searchString));
         }
+        /// <summary>
+        /// Get game by id
+        /// </summary>
+        /// <param name="id"> id of the game looking for</param>
+        /// <returns>Task game for asynchrone</returns>
         public async Task<Game> GetGameById(int id)
         {
             Game game = await _context.Games
@@ -60,13 +68,23 @@ namespace Ludotheque.Services
             return game;
         }
 
+        /// <summary>
+        /// Add game in database
+        /// </summary>
+        /// <param name="game">Game to add</param>
+        /// <returns></returns>
         public async Task AddGame(Game game)
         {
             _context.Add(game);
             await _context.SaveChangesAsync();
         }
 
-
+        /// <summary>
+        /// Sort list of game by order
+        /// </summary>
+        /// <param name="games">List of games not sorted</param>
+        /// <param name="sortOrder">How sort list of games</param>
+        /// <returns></returns>
         public IQueryable<Game> SortGames(IQueryable<Game> games, string sortOrder)
         {
             switch (sortOrder)
@@ -117,18 +135,202 @@ namespace Ludotheque.Services
 
             return games;
         }
-
-        public IQueryable<Game> GetGamesPages(IQueryable<Game> games, int pageNumber, int pageSize)
+        /// <summary>
+        /// Method get all categories ( Themes,Material support, Mechanisms) of a game
+        /// </summary>
+        /// <param name="id">id of the game</param>
+        /// <returns>game with all categories</returns>
+        public async Task<Game> GetGameWithCategories(int id)
         {
-            var PageIndex = pageNumber;
-            var count = games.Count();
-            var items = games.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-            var TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-            var hasPrevious = (PageIndex > 1);
-            var hasNext = (PageIndex < TotalPages);
-
-            return items.AsQueryable();
+            Game g = await _context.Games
+                .Include(i => i.ThemesGames)
+                .ThenInclude(i => i.Theme)
+                .Include(i => i.MaterialSupportsGames)
+                .ThenInclude(i => i.MaterialSupport)
+                .Include(i => i.MechanismsGames)
+                .ThenInclude(i => i.Mechanism)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            return g;
         }
+
+        //===================== Methos who concern relation many to many, very similar ==========================
+        //Todo : factorize code but how?
+
+        /// <summary>
+        /// Give a list of Theme for a game
+        /// </summary>
+        /// <param name="game">Game we are looking theme</param>
+        /// <returns>List of theme of the game</returns>
+        public List<AssignedCategories> PopulateAssignedThemesData(Game game)
+        {
+            var gameTheme = new HashSet<int>(game.ThemesGames.Select(c => c.ThemeId));
+            var allTheme = _context.Theme;
+            var viewModel = new List<AssignedCategories>();
+            foreach (var theme in allTheme)
+            {
+                viewModel.Add(new AssignedCategories()
+                {
+                    CategoryId = theme.Id,
+                    Name = theme.Name,
+                    Assigned = gameTheme.Contains(theme.Id)
+                });
+            }
+            return viewModel;
+        }
+        /// <summary>
+        /// Give a list of Material support for a game
+        /// </summary>
+        /// <param name="game">Game we are looking Material support</param>
+        /// <returns>List of Material support of the game</returns>
+        public List<AssignedCategories> PopulateAssignedMsData(Game game)
+        {
+            var gameMs = new HashSet<int>(game.MaterialSupportsGames.Select(c =>c.MaterialSupportId));
+            var allMs = _context.MaterialSupport;
+            var viewModel = new List<AssignedCategories>();
+            foreach (var ms in allMs)
+            {
+                viewModel.Add(new AssignedCategories()
+                {
+                    CategoryId = ms.Id,
+                    Name = ms.Name,
+                    Assigned = gameMs.Contains(ms.Id)
+                });
+            }
+
+
+            return viewModel;
+        }
+        /// <summary>
+        /// Give a list of Mechanisms for a game
+        /// </summary>
+        /// <param name="game">Game we are looking Mechanisms </param>
+        /// <returns>List of Mechanisms of the game</returns>
+        public List<AssignedCategories> PopulateAssignedMechasData(Game game)
+        {
+            HashSet<int> gameM;
+            gameM = new HashSet<int>(game.MechanismsGames.Select(c => c.MechanismId));
+            var allM = _context.Mechanism;
+
+            var viewModel = new List<AssignedCategories>();
+            foreach (var mecha in allM)
+            {
+                viewModel.Add(new AssignedCategories()
+                {
+                    CategoryId = mecha.Id,
+                    Name = mecha.Name,
+                    Assigned = gameM.Contains(mecha.Id)
+                });
+            }
+            return viewModel;
+        }
+        /// <summary>
+        /// Method to update themes of a game
+        /// </summary>
+        /// <param name="selectedThemes">Theme to apply</param>
+        /// <param name="gameToUpdate">Game that needs changes</param>
+        public void UpdateGamesThemes(string[] selectedThemes, Game gameToUpdate)
+        {
+            if (selectedThemes == null)
+            {
+                gameToUpdate.ThemesGames = new List<ThemesGames>();
+                return;
+            }
+
+            var selectedThems = new HashSet<string>(selectedThemes);
+            var gamesThemes = new HashSet<int>
+                (gameToUpdate.ThemesGames.Select(c => c.Theme.Id));
+            foreach (var theme in _context.Theme)
+            {
+                if (selectedThems.Contains(theme.Id.ToString()))
+                {
+                    if (!gamesThemes.Contains(theme.Id))
+                    {
+                        gameToUpdate.ThemesGames.Add(new ThemesGames { GameId = gameToUpdate.Id, ThemeId = theme.Id });
+                    }
+                }
+                else
+                {
+
+                    if (gamesThemes.Contains(theme.Id))
+                    {
+                        ThemesGames themsToRemove = gameToUpdate.ThemesGames.FirstOrDefault(i => i.ThemeId == theme.Id);
+                        _context.Remove(themsToRemove);
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// Method to update materials supports of a game
+        /// </summary>
+        /// <param name="selectedMaterials">materials to apply</param>
+        /// <param name="gameToUpdate">Game that needs changes</param>
+        public void UpdateGamesMaterialSupport(string[] selectedMaterials, Game gameToUpdate)
+        {
+            if (selectedMaterials == null)
+            {
+                gameToUpdate.MaterialSupportsGames = new List<MaterialSupportsGames>();
+                return;
+            }
+
+            var selectedMs = new HashSet<string>(selectedMaterials);
+            var gamesMs = new HashSet<int>
+                (gameToUpdate.MaterialSupportsGames.Select(c => c.MaterialSupport.Id));
+            foreach (var ms in _context.MaterialSupport)
+            {
+                if (selectedMs.Contains(ms.Id.ToString()))
+                {
+                    if (!gamesMs.Contains(ms.Id))
+                    {
+                        gameToUpdate.MaterialSupportsGames.Add(new MaterialSupportsGames() { GameId = gameToUpdate.Id, MaterialSupportId = ms.Id });
+                    }
+                }
+                else
+                {
+                    if (gamesMs.Contains(ms.Id))
+                    {
+                        MaterialSupportsGames msToRemove = gameToUpdate.MaterialSupportsGames.FirstOrDefault(i => i.MaterialSupportId == ms.Id);
+                        _context.Remove(msToRemove);
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// Method to update mechanisms of a game
+        /// </summary>
+        /// <param name="selectedMechanisms">mechanisms to apply</param>
+        /// <param name="gameToUpdate">Game that needs changes</param>
+        public void UpdateGamesMechanisms(string[] selectedMechanisms, Game gameToUpdate)
+        {
+            if (selectedMechanisms == null)
+            {
+                gameToUpdate.MechanismsGames = new List<MechanismsGames>();
+                return;
+            }
+
+            var selectedMecha = new HashSet<string>(selectedMechanisms);
+            var gamesMecha = new HashSet<int>
+                (gameToUpdate.MechanismsGames.Select(c => c.Mechanism.Id));
+            foreach (var m in _context.Mechanism)
+            {
+                if (selectedMecha.Contains(m.Id.ToString()))
+                {
+                    if (!gamesMecha.Contains(m.Id))
+                    {
+                        gameToUpdate.MechanismsGames.Add(new MechanismsGames() { GameId = gameToUpdate.Id, MechanismId = m.Id });
+                    }
+                }
+                else
+                {
+                    if (gamesMecha.Contains(m.Id))
+                    {
+                        MechanismsGames mToRemove = gameToUpdate.MechanismsGames.FirstOrDefault(i => i.MechanismId == m.Id);
+                        _context.Remove(mToRemove);
+                    }
+                }
+            }
+        }
+
+
 
 
 

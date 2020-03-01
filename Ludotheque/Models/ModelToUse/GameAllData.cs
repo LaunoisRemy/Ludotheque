@@ -9,6 +9,7 @@ namespace Ludotheque.Models
     {
         public Game Game { get; set; }
         public IEnumerable<Theme> Themes { get; set; }
+
         public IEnumerable<MaterialSupport> MaterialSupports { get; set; }
         public IEnumerable<Mechanism> Mechanisms { get; set; }
     }

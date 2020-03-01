@@ -34,8 +34,9 @@ namespace Ludotheque.Models
         [Display(Name = "Age minimum")]
         public int MinimumAge { get; set; }
 
-        [Display(Name = "Temps de jeu")]
-        public string GameTime { get; set; }
+        [Range(0, 10000)]
+        [Display(Name = "Temps de jeu(en min)")]
+        public int GameTime { get; set; }
 
         [Range(0, 200)]
         [DataType(DataType.Currency)]

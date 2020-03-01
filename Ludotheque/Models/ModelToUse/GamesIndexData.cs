@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace Ludotheque.Models
 {
+    /// <summary>
+    /// Class to present a game on the index page ( with all categories)
+    /// </summary>
     public class GamesIndexData
     {
         //todo : Revenir sur se systeme de pagination peu fiable 
@@ -15,7 +18,9 @@ namespace Ludotheque.Models
         public IEnumerable<Theme> Themes { get; set; }
         public IEnumerable<MaterialSupport> MaterialSupports { get; set; }
         public IEnumerable<Mechanism> Mechanisms { get; set; }
-
+        /// <summary>
+        /// used to enable or disable Previous
+        /// </summary>
         public bool HasPreviousPage
         {
             get
@@ -23,7 +28,9 @@ namespace Ludotheque.Models
                 return (PageIndex > 1);
             }
         }
-
+        /// <summary>
+        ///  used to enable or disable Next paging buttons
+        /// </summary>
         public bool HasNextPage
         {
             get

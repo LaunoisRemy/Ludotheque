@@ -99,6 +99,47 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Editor.Name)
+            fds
+        </dd>
+
+        <dt class="col-sm-2">Themes</dt>
+        <dd class="col-sm-10">
+            <ul class="list-inline">
+                @foreach (var t in ViewBag.Theme)
+                {
+                    @if (t.Assigned)
+                    {
+                        <li class="list-inline-item">@t.Name</li>
+                    }
+
+                }
+            </ul>
+        </dd>
+        <dt class="col-sm-2">Support matériel</dt>
+        <dd class="col-sm-10">
+            <ul class="list-inline">
+                @foreach (var t in ViewBag.MaterialSupport)
+                {
+                    @if (t.Assigned)
+                    {
+                        <li class="list-inline-item">@t.Name</li>
+                    }
+
+                }
+            </ul>
+        </dd>
+        <dt class="col-sm-2">Mécanismes</dt>
+        <dd class="col-sm-10">
+            <ul class="list-inline">
+                @foreach (var t in ViewBag.Mechanisms)
+                {
+                    @if (t.Assigned)
+                    {
+                        <li class="list-inline-item">@t.Name</li>
+                    }
+
+                }
+            </ul>
         </dd>
     </dl>
 </div>

@@ -50,6 +50,7 @@ namespace Ludotheque.Services
             return viewModel;
 
         }
+        [Obsolete("No use in app")]
         public async Task<GameAllData> GetGameAndCategories(Game game)
         {
             var theme = from tg in game.ThemesGames 

@@ -30,6 +30,7 @@ namespace Ludotheque.Controllers
         public async Task<IActionResult> Index(string searchString,string sortOrder, string currentFilter, int? pageNumber)
         {
             //Todo : Si ecran trop petit afficher des colonnes en moins
+            //Todo : limiter le nombre de catégories montrées a 3
             //Todo : Probleme si critères vide sort ne trie pas bien
             //return View(await _context.Jeu.ToListAsync());
             IQueryable<Game> games;
@@ -93,12 +94,16 @@ namespace Ludotheque.Controllers
             else
             {
                 int _id = (int) id;
-                var game = await _gameService.GetGameById(_id);
+                //var game = await _gameService.GetGameById(_id);
+                var game = await _gameService.GetGameWithCategories((int)id);
+
                 if (game == null)
                 {
                     return NotFound();
                 }
 
+                ViewDataRelationMtM(game);
+                ViewDataRelationOtM(game);
                 return View(game);
             }
 
@@ -108,27 +113,61 @@ namespace Ludotheque.Controllers
         // GET: Games/Create
         public IActionResult Create()
         {
-            ViewData["DifficultyId"] = new SelectList(_context.Difficulties, "Id", "label");
-            ViewData["EditorId"] = new SelectList(_context.Editors, "Id", "Name");
-            ViewData["IllustratorId"] = new SelectList(_context.Illustrators, "Id", "LastName");
+            var game = new Game();
+            game.ThemesGames = new List<ThemesGames>();
+            game.MaterialSupportsGames = new List<MaterialSupportsGames>();
+            game.MechanismsGames = new List<MechanismsGames>();
+            ViewDataRelationMtM(game);
+            ViewDataRelationOtM(game);
+
             return View();
         }
+
 
         // POST: Games/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,MinPlayer,MaxPlayer,MinimumAge,GameTime,Price,ReleaseDate,BuyLink,VideoLink,PictureLink,Validate,DifficultyId,IllustratorId,EditorId")] Game game)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,MinPlayer,MaxPlayer,MinimumAge,GameTime,Price,ReleaseDate,BuyLink,VideoLink,PictureLink,Validate,DifficultyId,IllustratorId,EditorId")] Game game, string[] selectedThemes, string[] selectedMs, string[] selectedMecha)
         {
+
+            if (selectedMecha != null)
+            {
+                game.MechanismsGames = new List<MechanismsGames>();
+                foreach (var mecha in selectedMecha)
+                {
+                    var mechaToAdd = new MechanismsGames() { GameId = game.Id, MechanismId = int.Parse(mecha) };
+                    game.MechanismsGames.Add(mechaToAdd);
+                }
+            }
+            if (selectedMs != null)
+            {
+                game.MaterialSupportsGames = new List<MaterialSupportsGames>();
+                foreach (var ms in selectedMs)
+                {
+                    var msToAdd = new MaterialSupportsGames() { GameId = game.Id, MaterialSupportId = int.Parse(ms) };
+                    game.MaterialSupportsGames.Add(msToAdd);
+                }
+            }
+            if (selectedThemes != null)
+            {
+                game.ThemesGames = new List<ThemesGames>();
+                foreach (var t in selectedThemes)
+                {
+                    var themeToAdd = new ThemesGames() { GameId = game.Id, ThemeId = int.Parse(t) };
+                    game.ThemesGames.Add(themeToAdd);
+                }
+            }
             if (ModelState.IsValid)
             {
-                await _gameService.AddGame(game);
+                _context.Add(game);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DifficultyId"] = new SelectList(_context.Difficulties, "Id", "Id", game.DifficultyId);
-            ViewData["EditorId"] = new SelectList(_context.Editors, "Id", "Name", game.EditorId);
-            ViewData["IllustratorId"] = new SelectList(_context.Illustrators, "Id", "LastName", game.IllustratorId);
+            ViewDataRelationOtM(game);
+
+            ViewDataRelationMtM(game);
             return View(game);
         }
 
@@ -145,16 +184,9 @@ namespace Ludotheque.Controllers
             {
                 return NotFound();
             }
-            var viewModel= _gameService.PopulateAssignedThemesData(game);
-            ViewData["Theme"] = viewModel;
-            viewModel = _gameService.PopulateAssignedMsData(game);
-            ViewData["MaterialSupport"] = viewModel;
-            viewModel = _gameService.PopulateAssignedMechasData(game);
-            ViewData["Mechanisms"] = viewModel;
 
-            ViewData["DifficultyId"] = new SelectList(_context.Difficulties, "Id", "label", game.DifficultyId);
-            ViewData["EditorId"] = new SelectList(_context.Editors, "Id", "Name", game.EditorId);
-            ViewData["IllustratorId"] = new SelectList(_context.Illustrators, "Id", "LastName", game.IllustratorId);
+            ViewDataRelationMtM(game);
+            ViewDataRelationOtM(game);
             //var t =  await _gameAllDataService.GetGameAndCategories(game);
             return View(game);
         }
@@ -204,14 +236,7 @@ namespace Ludotheque.Controllers
             _gameService.UpdateGamesMaterialSupport(selectedMs, gameToUpdate);
             _gameService.UpdateGamesMechanisms(selectedMecha, gameToUpdate);
 
-            var viewModel = _gameService.PopulateAssignedThemesData(gameToUpdate);
-            ViewData["Theme"] = viewModel;
-            viewModel = _gameService.PopulateAssignedMechasData(gameToUpdate);
-            ViewData["Mechanisms"] = viewModel;
-            viewModel = _gameService.PopulateAssignedMsData(gameToUpdate);
-            ViewData["MaterialSupport"] = viewModel;
-            viewModel = _gameService.PopulateAssignedMechasData(gameToUpdate);
-            ViewData["Mechanisms"] = viewModel;
+            ViewDataRelationMtM(gameToUpdate);
             return View(gameToUpdate);
         }
 
@@ -245,10 +270,28 @@ namespace Ludotheque.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        //===================== Methods for controller
         private bool GameExists(int id)
         {
             return _context.Games.Any(e => e.Id == id);
         }
 
+        private void ViewDataRelationMtM(Game game)
+        {
+            var viewModel = _gameService.PopulateAssignedThemesData(game);
+            ViewData["Theme"] = viewModel;
+            viewModel = _gameService.PopulateAssignedMsData(game);
+            ViewData["MaterialSupport"] = viewModel;
+            viewModel = _gameService.PopulateAssignedMechasData(game);
+            ViewData["Mechanisms"] = viewModel;
+
+        }
+
+        private void ViewDataRelationOtM(Game game)
+        {
+            ViewData["DifficultyId"] = new SelectList(_context.Difficulties, "Id", "label", game.DifficultyId);
+            ViewData["EditorId"] = new SelectList(_context.Editors, "Id", "Name", game.EditorId);
+            ViewData["IllustratorId"] = new SelectList(_context.Illustrators, "Id", "LastName", game.IllustratorId);
+        }
     }
 }

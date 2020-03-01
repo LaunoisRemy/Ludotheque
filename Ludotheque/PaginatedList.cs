@@ -19,6 +19,9 @@ namespace Ludotheque
 
             this.AddRange(items);
         }
+        /// <summary>
+        /// used to enable or disable Previous
+        /// </summary>
         public bool HasPreviousPage
         {
             get
@@ -26,7 +29,9 @@ namespace Ludotheque
                 return (PageIndex > 1);
             }
         }
-
+        /// <summary>
+        ///  used to enable or disable Next paging buttons
+        /// </summary>
         public bool HasNextPage
         {
             get

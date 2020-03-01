@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace Ludotheque.Models
 {
+    [Obsolete("Class useless")]
     public class GameAllData
     {
         public Game Game { get; set; }

@@ -18,13 +18,13 @@ namespace Ludotheque.Services
     /// </summary>
     public class GamesService
     {
-        private readonly LudothequeContext _context;
+        private readonly LudothequeAccountContext _context;
 
         /// <summary>
         /// Constructor of GamesService to work on the model Game
         /// </summary>
         /// <param name="context">Database of the application where we can find game</param>
-        public GamesService(LudothequeContext context)
+        public GamesService(LudothequeAccountContext context)
         {
             _context = context;
         }

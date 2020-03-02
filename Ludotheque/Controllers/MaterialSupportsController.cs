@@ -12,9 +12,9 @@ namespace Ludotheque.Controllers
 {
     public class MaterialSupportsController : Controller
     {
-        private readonly LudothequeContext _context;
+        private readonly LudothequeAccountContext _context;
 
-        public MaterialSupportsController(LudothequeContext context)
+        public MaterialSupportsController(LudothequeAccountContext context)
         {
             _context = context;
         }

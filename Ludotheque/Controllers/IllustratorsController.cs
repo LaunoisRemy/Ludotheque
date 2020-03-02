@@ -12,9 +12,9 @@ namespace Ludotheque.Controllers
 {
     public class IllustratorsController : Controller
     {
-        private readonly LudothequeContext _context;
+        private readonly LudothequeAccountContext _context;
 
-        public IllustratorsController(LudothequeContext context)
+        public IllustratorsController(LudothequeAccountContext context)
         {
             _context = context;
         }

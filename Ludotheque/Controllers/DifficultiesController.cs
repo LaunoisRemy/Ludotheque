@@ -12,9 +12,10 @@ namespace Ludotheque.Controllers
 {
     public class DifficultiesController : Controller
     {
-        private readonly LudothequeContext _context;
+        //private readonly LudothequeContext _context;
+        private readonly LudothequeAccountContext _context;
 
-        public DifficultiesController(LudothequeContext context)
+        public DifficultiesController(LudothequeAccountContext context)
         {
             _context = context;
         }

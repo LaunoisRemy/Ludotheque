@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Ludotheque.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 
 namespace Ludotheque
@@ -27,10 +28,17 @@ namespace Ludotheque
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            /*services.AddControllersWithViews();
 
             services.AddDbContext<LudothequeContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("LudothequeContext")));
+                    options.UseSqlServer(Configuration.GetConnectionString("LudothequeContext")));*/
+            /*services.AddDbContext<LudothequeAccountContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("LudothequeAccountContext")));
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<LudothequeAccountContext>();*/
+            services.AddControllersWithViews();
+            services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,6 +47,7 @@ namespace Ludotheque
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
             }
             else
             {
@@ -52,12 +61,14 @@ namespace Ludotheque
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
 
             var cultureInfo = new CultureInfo("fr-FR");

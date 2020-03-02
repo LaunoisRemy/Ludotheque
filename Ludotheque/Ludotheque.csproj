@@ -24,11 +24,18 @@
     <Compile Remove="Migrations\20200228205913_Initial_Create.Designer.cs" />
     <Compile Remove="Migrations\20200229153323_Initial_Create.cs" />
     <Compile Remove="Migrations\20200229153323_Initial_Create.Designer.cs" />
+    <Compile Remove="Migrations\LudothequeAccount\20200302153258_CreateIdentitySchema.cs" />
+    <Compile Remove="Migrations\LudothequeAccount\20200302153258_CreateIdentitySchema.Designer.cs" />
+    <Compile Remove="Migrations\LudothequeAccount\20200302165652_CreateIdentitySchema.cs" />
+    <Compile Remove="Migrations\LudothequeAccount\20200302165652_CreateIdentitySchema.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="jquery-globalize" Version="1.4.2" />
     <PackageReference Include="jQuery.Validation.Globalize" Version="1.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

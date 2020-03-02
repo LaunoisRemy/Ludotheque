@@ -12,9 +12,9 @@ namespace Ludotheque.Controllers
 {
     public class EditorsController : Controller
     {
-        private readonly LudothequeContext _context;
+        private readonly LudothequeAccountContext _context;
 
-        public EditorsController(LudothequeContext context)
+        public EditorsController(LudothequeAccountContext context)
         {
             _context = context;
         }

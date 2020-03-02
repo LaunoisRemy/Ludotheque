@@ -2,18 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using Ludotheque.Areas.Identity.Data;
 using Ludotheque.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ludotheque.Data
 {
-    public class LudothequeContext : DbContext
+    public class LudothequeAccountContext : IdentityDbContext<LudothequeUser>
     {
-        public LudothequeContext (DbContextOptions<LudothequeContext> options)
+        public LudothequeAccountContext(DbContextOptions<LudothequeAccountContext> options)
             : base(options)
         {
         }
-
         public DbSet<Ludotheque.Models.Game> Games { get; set; }
         public DbSet<Ludotheque.Models.Difficulty> Difficulties { get; set; }
         public DbSet<Ludotheque.Models.Editor> Editors { get; set; }
@@ -27,6 +29,10 @@ namespace Ludotheque.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+            // Customize the ASP.NET Identity model and override the defaults if needed.
+            // For example, you can rename the ASP.NET Identity table names and more.
+            // Add your customizations after calling base.OnModelCreating(builder);
             modelBuilder.Entity<Game>().ToTable("Games");
             modelBuilder.Entity<Difficulty>().ToTable("Difficulties");
             modelBuilder.Entity<Editor>().ToTable("Editors");
@@ -71,7 +77,5 @@ namespace Ludotheque.Data
                 .WithMany(c => c.MechanismsGames)
                 .HasForeignKey(bc => bc.GameId);
         }
-
-
     }
 }

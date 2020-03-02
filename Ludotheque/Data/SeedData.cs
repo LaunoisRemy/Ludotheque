@@ -13,9 +13,9 @@ namespace Ludotheque.Models
         public static void Initialize(IServiceProvider serviceProvider)
         {
 
-            using (var context = new LudothequeContext(
+            using (var context = new LudothequeAccountContext(
                 serviceProvider.GetRequiredService<
-                    DbContextOptions<LudothequeContext>>()))
+                    DbContextOptions<LudothequeAccountContext>>()))
             {
                 //======================================= Delete all data (temporary) =======================================
 
@@ -284,7 +284,7 @@ namespace Ludotheque.Models
             }
         }
 
-        public static void DropAllData(LudothequeContext context)
+        public static void DropAllData(LudothequeAccountContext context)
         {
             context.Games.RemoveRange(context.Games);
             context.Editors.RemoveRange(context.Editors);
@@ -296,7 +296,7 @@ namespace Ludotheque.Models
             context.SaveChanges();
         }
 
-        public static void AddInDataBase<T>(T[] data, LudothequeContext context)
+        public static void AddInDataBase<T>(T[] data, LudothequeAccountContext context)
         {
             foreach (var d in data)
             {

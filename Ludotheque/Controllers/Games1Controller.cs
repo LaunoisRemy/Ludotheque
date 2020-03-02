@@ -13,11 +13,11 @@ namespace Ludotheque.Controllers
 {
     public class Games1Controller : Controller
     {
-        private readonly LudothequeContext _context;
+        private readonly LudothequeAccountContext _context;
         private GameAllDataService _gameService;
 
 
-        public Games1Controller(LudothequeContext context)
+        public Games1Controller(LudothequeAccountContext context)
         {
             _context = context;
             _gameService = new GameAllDataService(context);

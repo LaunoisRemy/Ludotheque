@@ -7,18 +7,17 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Ludotheque.Data;
 using Ludotheque.Models;
-using Ludotheque.Models;
 using Ludotheque.Services;
 
 namespace Ludotheque.Controllers
 {
     public class GamesController : Controller
     {
-        private readonly LudothequeContext _context;
+        private readonly LudothequeAccountContext _context;
         private GamesService _gameService;
         private GameAllDataService _gameAllDataService;
 
-        public GamesController(LudothequeContext context)
+        public GamesController(LudothequeAccountContext context)
         {
             _context = context;
             _gameService = new GamesService(context);;
@@ -51,10 +50,6 @@ namespace Ludotheque.Controllers
         }
         public async Task<IActionResult> Editor(int id, string sortOrder, string currentFilter, int? pageNumber)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
             var editor = await _context.Editors
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -72,10 +67,6 @@ namespace Ludotheque.Controllers
         }
         public async Task<IActionResult> Theme(int id, string sortOrder, string currentFilter, int? pageNumber)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
             var t = await _context.Theme
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -93,11 +84,6 @@ namespace Ludotheque.Controllers
         }
         public async Task<IActionResult> MaterialSupport(int id, string sortOrder, string currentFilter, int? pageNumber)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var t = await _context.MaterialSupport
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (t == null)
@@ -114,10 +100,6 @@ namespace Ludotheque.Controllers
         }
         public async Task<IActionResult> Mechanism(int id, string sortOrder, string currentFilter, int? pageNumber)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
             var t = await _context.Mechanism
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -135,11 +117,6 @@ namespace Ludotheque.Controllers
         }
         public async Task<IActionResult> Difficulty(int id, string sortOrder, string currentFilter, int? pageNumber)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var t = await _context.Difficulties
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (t == null)

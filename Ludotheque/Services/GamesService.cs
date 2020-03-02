@@ -101,6 +101,53 @@ namespace Ludotheque.Services
 
         }
         /// <summary>
+        /// Get game by material support
+        /// </summary>
+        /// <param name="id"> id material support of the games we looking for</param>
+        /// <returns> game for asynchrone</returns>
+        public IQueryable<Game> GetGamesByMs(int id)
+        {
+            var idGames = from gt in _context.MaterialSupportsGames
+                where gt.MaterialSupportId == id
+                select gt.Game.Id;
+
+            return _context.Games.Include(g => g.Difficulty)
+                .Include(g => g.Editor)
+                .Include(g => g.Illustrator)
+                .Where(c => idGames.Contains(c.Id));
+
+        }
+        /// <summary>
+        /// Get game by mechanisms support
+        /// </summary>
+        /// <param name="id"> id mechanisms of the games we looking for</param>
+        /// <returns> game for asynchrone</returns>
+        public IQueryable<Game> GetGamesByMecha(int id)
+        {
+            var idGames = from gt in _context.MechanismsGames
+                where gt.MechanismId == id
+                select gt.Game.Id;
+
+            return _context.Games.Include(g => g.Difficulty)
+                .Include(g => g.Editor)
+                .Include(g => g.Illustrator)
+                .Where(c => idGames.Contains(c.Id));
+
+        }
+        /// <summary>
+        /// Get game by difficulty support
+        /// </summary>
+        /// <param name="id"> id difficulty of the games we looking for</param>
+        /// <returns> game for asynchrone</returns>
+        public IQueryable<Game> GetGamesByDifficulty(int id)
+        {
+            return _context.Games.Include(g => g.Difficulty)
+                .Include(g => g.Difficulty)
+                .Include(g => g.Illustrator)
+                .Where(c => c.DifficultyId == id);
+        }
+
+        /// <summary>
         /// Add game in database
         /// </summary>
         /// <param name="game">Game to add</param>

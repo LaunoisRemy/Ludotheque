@@ -64,7 +64,9 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    <a asp-action="Details" asp-route-id="@item.Id">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.MinPlayer)
@@ -88,7 +90,10 @@
                     @Html.DisplayFor(modelItem => item.PictureLink)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Difficulty.label)
+                    <a asp-action="Difficulty" asp-route-id="@item.DifficultyId">
+                        @Html.DisplayFor(modelItem => item.Difficulty.label)
+                    </a>
+                   
                 </td>
                 <td>
                     <a asp-action="Editor" asp-route-id="@item.EditorId">
@@ -111,13 +116,18 @@
                 <td>
                     @foreach (var t in item.MaterialSupportsGames)
                     {
-                        @t.MaterialSupport.Name <br />
+                        <a asp-action="MaterialSupport" asp-route-id="@t.MaterialSupportId">
+                            @t.MaterialSupport.Name <br />
+                        </a>
                     }
                 </td>
                 <td>
                     @foreach (var t in item.MechanismsGames)
                     {
+                    <a asp-action="MaterialSupport" asp-route-id="@t.MechanismId">
                         @t.Mechanism.Name <br />
+                    </a>
+                       
                     }
                 </td>
                 <td>

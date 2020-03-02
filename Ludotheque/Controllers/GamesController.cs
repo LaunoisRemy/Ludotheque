@@ -91,6 +91,68 @@ namespace Ludotheque.Controllers
             GamesIndexData gamesAllData = await SortGames(currentFilter, sortOrder, currentFilter, pageNumber, games);
             return View(gamesAllData);
         }
+        public async Task<IActionResult> MaterialSupport(int id, string sortOrder, string currentFilter, int? pageNumber)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var t = await _context.MaterialSupport
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (t == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.MsName = t.Name;
+            ViewBag.MsDesc = t.Description;
+
+            IQueryable<Game> games = _gameService.GetGamesByMs(id);
+            GamesIndexData gamesAllData = await SortGames(currentFilter, sortOrder, currentFilter, pageNumber, games);
+            return View(gamesAllData);
+        }
+        public async Task<IActionResult> Mechanism(int id, string sortOrder, string currentFilter, int? pageNumber)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var t = await _context.Mechanism
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (t == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.MName = t.Name;
+            ViewBag.MDesc = t.Description;
+
+            IQueryable<Game> games = _gameService.GetGamesByMecha(id);
+            GamesIndexData gamesAllData = await SortGames(currentFilter, sortOrder, currentFilter, pageNumber, games);
+            return View(gamesAllData);
+        }
+        public async Task<IActionResult> Difficulty(int id, string sortOrder, string currentFilter, int? pageNumber)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var t = await _context.Difficulties
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (t == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.DiffName = t.label;
+
+            IQueryable<Game> games = _gameService.GetGamesByDifficulty(id);
+            GamesIndexData gamesAllData = await SortGames(currentFilter, sortOrder, currentFilter, pageNumber, games);
+            return View(gamesAllData);
+        }
 
         public async Task<GamesIndexData> SortGames(string searchString, string sortOrder, string currentFilter, int? pageNumber, IQueryable<Game> games)
         {

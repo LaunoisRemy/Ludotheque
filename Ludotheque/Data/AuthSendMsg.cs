@@ -7,7 +7,7 @@ namespace Ludotheque.Data
 {
     public class AuthSendMsg
     {
-        public string GmailUser { get; set; }
-        public string GmailKey { get; set; }
+        public string SendGridUser { get; set; }
+        public string SendGridKey { get; set; }
     }
 }

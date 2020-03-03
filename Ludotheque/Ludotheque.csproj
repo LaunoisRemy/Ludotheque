@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>f1229181-08cc-4db9-a7d3-b8d8273fa1f5</UserSecretsId>
+    <ResolveStaticWebAssetsInputsDependsOn>RemoveIdentityAssets</ResolveStaticWebAssetsInputsDependsOn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -47,6 +48,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+    <PackageReference Include="SendGrid" Version="9.12.7" />
   </ItemGroup>
 
   <ItemGroup>
@@ -54,6 +56,12 @@
       <HintPath>..\..\..\..\.nuget\packages\pagedlist.mvc\4.5.0\lib\net40\PagedList.Mvc.dll</HintPath>
     </Reference>
   </ItemGroup>
+
+  <Target Name="RemoveIdentityAssets">
+    <ItemGroup>
+      <StaticWebAsset Remove="@(StaticWebAsset)" Condition="%(SourceId) == 'Microsoft.AspNetCore.Identity.UI'" />
+    </ItemGroup>
+  </Target>
 
 
 

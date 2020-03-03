@@ -42,7 +42,7 @@ namespace Ludotheque.Areas.Identity.Pages.Account
             }
 
             Email = email;
-            // Once you add a real email sender, you should remove this code that lets you confirm the account
+            /* Once you add a real email sender, you should remove this code that lets you confirm the account
             DisplayConfirmAccountLink = true;
             if (DisplayConfirmAccountLink)
             {
@@ -54,7 +54,7 @@ namespace Ludotheque.Areas.Identity.Pages.Account
                     pageHandler: null,
                     values: new { area = "Identity", userId = userId, code = code },
                     protocol: Request.Scheme);
-            }
+            }*/
 
             return Page();
         }

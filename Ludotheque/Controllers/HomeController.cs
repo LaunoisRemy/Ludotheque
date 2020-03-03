@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Ludotheque.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Ludotheque.Controllers
 {
@@ -22,7 +23,6 @@ namespace Ludotheque.Controllers
         {
             return View();
         }
-
         public IActionResult Privacy()
         {
             return View();

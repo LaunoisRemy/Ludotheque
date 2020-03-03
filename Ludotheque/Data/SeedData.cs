@@ -19,7 +19,7 @@ namespace Ludotheque.Models
             {
                 //======================================= Delete all data (temporary) =======================================
 
-                DropAllData(context);
+                //DropAllData(context);
 
                 //======================================= Add Editors =======================================
                 if (!context.Editors.Any())

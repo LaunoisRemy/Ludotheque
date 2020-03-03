@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Ludotheque.Data;
 using Ludotheque.Models;
 using Ludotheque.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Ludotheque.Controllers
 {
@@ -258,6 +259,7 @@ namespace Ludotheque.Controllers
         }
 
         // GET: Games/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)

@@ -11,7 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Ludotheque.Data;
+using Ludotheque.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
 
 namespace Ludotheque
@@ -28,17 +30,19 @@ namespace Ludotheque
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            /*services.AddControllersWithViews();
-
-            services.AddDbContext<LudothequeContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("LudothequeContext")));*/
-            /*services.AddDbContext<LudothequeAccountContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("LudothequeAccountContext")));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<LudothequeAccountContext>();*/
             services.AddControllersWithViews();
             services.AddRazorPages();
+            // requires
+            // using Microsoft.AspNetCore.Identity.UI.Services;
+            // using WebPWrecover.Services;
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.Configure<AuthSendMsg>(Configuration);
+            services.ConfigureApplicationCookie(o => {
+                o.ExpireTimeSpan = TimeSpan.FromDays(5);
+                o.SlidingExpiration = true;
+            });
+            services.Configure<DataProtectionTokenProviderOptions>(o =>
+            o.TokenLifespan = TimeSpan.FromHours(3));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,7 +64,7 @@ namespace Ludotheque
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

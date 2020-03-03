@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Ludotheque.Migrations.LudothequeAccount
+namespace Ludotheque.Migrations
 {
     [DbContext(typeof(LudothequeAccountContext))]
-    [Migration("20200302165749_CreateIdentitySchema")]
-    partial class CreateIdentitySchema
+    [Migration("20200303202419_Initial_Create")]
+    partial class Initial_Create
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

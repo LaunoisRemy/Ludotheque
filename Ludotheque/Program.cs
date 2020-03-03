@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ludotheque.Data;
 using Ludotheque.Models;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,7 +26,16 @@ namespace Ludotheque
 
                 try
                 {
-                    SeedData.Initialize(services);
+                    var context = services.GetRequiredService< LudothequeAccountContext>();
+                    context.Database.Migrate();
+
+                    // requires using Microsoft.Extensions.Configuration;
+                    var config = host.Services.GetRequiredService<IConfiguration>();
+                    // Set password with the Secret Manager tool.
+                    // dotnet user-secrets set SeedUserPW <pw>
+
+                    var testUserPw = config["SeedUserPW"];
+                    SeedData.Initialize(services, testUserPw).Wait();
                 }
                 catch (Exception ex)
                 {

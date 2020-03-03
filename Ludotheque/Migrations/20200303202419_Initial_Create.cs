@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Ludotheque.Migrations.LudothequeAccount
+namespace Ludotheque.Migrations
 {
-    public partial class CreateIdentitySchema : Migration
+    public partial class Initial_Create : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Ludotheque.Data;
 using Ludotheque.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Ludotheque.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class DifficultiesController : Controller
     {
         //private readonly LudothequeContext _context;
@@ -20,6 +22,7 @@ namespace Ludotheque.Controllers
             _context = context;
         }
 
+        [AllowAnonymous]
         // GET: Difficulties
         public async Task<IActionResult> Index()
         {

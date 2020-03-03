@@ -29,14 +29,16 @@
     <Compile Remove="Migrations\LudothequeAccount\20200302153258_CreateIdentitySchema.Designer.cs" />
     <Compile Remove="Migrations\LudothequeAccount\20200302165652_CreateIdentitySchema.cs" />
     <Compile Remove="Migrations\LudothequeAccount\20200302165652_CreateIdentitySchema.Designer.cs" />
+    <Compile Remove="Migrations\LudothequeAccount\20200302165749_CreateIdentitySchema.cs" />
+    <Compile Remove="Migrations\LudothequeAccount\20200302165749_CreateIdentitySchema.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="jquery-globalize" Version="1.4.2" />
     <PackageReference Include="jQuery.Validation.Globalize" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -55,6 +57,10 @@
     <Reference Include="PagedList.Mvc">
       <HintPath>..\..\..\..\.nuget\packages\pagedlist.mvc\4.5.0\lib\net40\PagedList.Mvc.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\LudothequeAccount\" />
   </ItemGroup>
 
   <Target Name="RemoveIdentityAssets">

@@ -5,24 +5,93 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace Ludotheque.Models
 {
     public class SeedData
     {
-        public static void Initialize(IServiceProvider serviceProvider)
+        public static async Task Initialize(IServiceProvider serviceProvider, string testUserPw)
+        {
+            using (var context = new LudothequeAccountContext(
+            serviceProvider.GetRequiredService<DbContextOptions<LudothequeAccountContext>>()))
+            {
+                /*var adminID = await EnsureUser(serviceProvider, testUserPw, "spprtludotheque@gmail.com");
+                await EnsureRole(serviceProvider, adminID, "admin");
+
+                // allowed user can create and edit contacts that they create
+                var managerID = await EnsureUser(serviceProvider, testUserPw, "remy.launois@contoso.com");
+                await EnsureRole(serviceProvider, managerID, "manager");*/
+
+                await SeedDB(context);
+            }
+        }
+        /*private static async Task<string> EnsureUser(IServiceProvider serviceProvider,
+                                            string testUserPw, string UserName)
+        {
+            var userManager = serviceProvider.GetService<UserManager<IdentityUser>>();
+
+            var user = await userManager.FindByNameAsync(UserName);
+            if (user == null)
+            {
+                user = new IdentityUser
+                {
+                    UserName = UserName,
+                    EmailConfirmed = true
+                };
+                await userManager.CreateAsync(user, testUserPw);
+            }
+
+            if (user == null)
+            {
+                throw new Exception("The password is probably not strong enough!");
+            }
+
+            return user.Id;
+        }
+
+        private static async Task<IdentityResult> EnsureRole(IServiceProvider serviceProvider,
+                                                                      string uid, string role)
+        {
+            IdentityResult IR = null;
+            var roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
+
+            if (roleManager == null)
+            {
+                throw new Exception("roleManager null");
+            }
+
+            if (!await roleManager.RoleExistsAsync(role))
+            {
+                IR = await roleManager.CreateAsync(new IdentityRole(role));
+            }
+
+            var userManager = serviceProvider.GetService<UserManager<IdentityUser>>();
+
+            var user = await userManager.FindByIdAsync(uid);
+
+            if (user == null)
+            {
+                throw new Exception("The testUserPw password was probably not strong enough!");
+            }
+
+            IR = await userManager.AddToRoleAsync(user, role);
+
+            return IR;
+        }*/
+
+
+
+        public static  async Task SeedDB(LudothequeAccountContext context)
         {
 
-            using (var context = new LudothequeAccountContext(
-                serviceProvider.GetRequiredService<
-                    DbContextOptions<LudothequeAccountContext>>()))
-            {
-                //======================================= Delete all data (temporary) =======================================
+            //======================================= Delete all data (temporary) =======================================
 
-                //DropAllData(context);
-
-                //======================================= Add Editors =======================================
-                if (!context.Editors.Any())
+            //DropAllData(context);
+           
+            //======================================= Add Editors =======================================
+            if (!context.Editors.Any())
                 {
                     context.Editors.AddRange(
 
@@ -47,7 +116,7 @@ namespace Ludotheque.Models
                     AddInDataBase(editors, context);
 
                 }
-
+                
                 //======================================= Add Difficulty =======================================
                 if (!context.Difficulties.Any())
                 {
@@ -281,8 +350,8 @@ namespace Ludotheque.Models
 
                 }
 
-            }
         }
+        
 
         public static void DropAllData(LudothequeAccountContext context)
         {

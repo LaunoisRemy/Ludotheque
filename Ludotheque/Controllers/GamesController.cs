@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Ludotheque.Controllers
 {
+    [Authorize]
     public class GamesController : Controller
     {
         private readonly LudothequeAccountContext _context;
@@ -27,6 +28,7 @@ namespace Ludotheque.Controllers
         }
 
         // GET: Games
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string searchString,string sortOrder, string currentFilter, int? pageNumber)
         {
             //Todo : Si ecran trop petit afficher des colonnes en moins
@@ -49,6 +51,15 @@ namespace Ludotheque.Controllers
 
             return View(gamesAllData);
         }
+        /// <summary>
+        /// Controller to list games of one editor 
+        /// </summary>
+        /// <param name="id">id of game</param>
+        /// <param name="sortOrder"> string for know how to sort columns</param>
+        /// <param name="currentFilter">Filtrer apply</param>
+        /// <param name="pageNumber">Number of page</param>
+        /// <returns></returns>
+        [AllowAnonymous]
         public async Task<IActionResult> Editor(int id, string sortOrder, string currentFilter, int? pageNumber)
         {
 
@@ -66,6 +77,15 @@ namespace Ludotheque.Controllers
             GamesIndexData gamesAllData = await SortGames(currentFilter, sortOrder, currentFilter, pageNumber, games);
             return View(gamesAllData);
         }
+        /// <summary>
+        /// Controller to show all games of one editor
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="sortOrder"></param>
+        /// <param name="currentFilter"></param>
+        /// <param name="pageNumber"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
         public async Task<IActionResult> Theme(int id, string sortOrder, string currentFilter, int? pageNumber)
         {
 
@@ -83,6 +103,15 @@ namespace Ludotheque.Controllers
             GamesIndexData gamesAllData = await SortGames(currentFilter, sortOrder, currentFilter, pageNumber, games);
             return View(gamesAllData);
         }
+        /// <summary>
+        /// Controller to show all games of one type of support
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="sortOrder"></param>
+        /// <param name="currentFilter"></param>
+        /// <param name="pageNumber"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
         public async Task<IActionResult> MaterialSupport(int id, string sortOrder, string currentFilter, int? pageNumber)
         {
             var t = await _context.MaterialSupport
@@ -99,6 +128,15 @@ namespace Ludotheque.Controllers
             GamesIndexData gamesAllData = await SortGames(currentFilter, sortOrder, currentFilter, pageNumber, games);
             return View(gamesAllData);
         }
+        /// <summary>
+        /// Controller to show all games of one type of mechanism
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="sortOrder"></param>
+        /// <param name="currentFilter"></param>
+        /// <param name="pageNumber"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
         public async Task<IActionResult> Mechanism(int id, string sortOrder, string currentFilter, int? pageNumber)
         {
 
@@ -116,6 +154,7 @@ namespace Ludotheque.Controllers
             GamesIndexData gamesAllData = await SortGames(currentFilter, sortOrder, currentFilter, pageNumber, games);
             return View(gamesAllData);
         }
+        [AllowAnonymous]
         public async Task<IActionResult> Difficulty(int id, string sortOrder, string currentFilter, int? pageNumber)
         {
             var t = await _context.Difficulties
@@ -132,6 +171,7 @@ namespace Ludotheque.Controllers
             return View(gamesAllData);
         }
 
+        [AllowAnonymous]
         public async Task<GamesIndexData> SortGames(string searchString, string sortOrder, string currentFilter, int? pageNumber, IQueryable<Game> games)
         {
             ViewBag.CurrentSort = sortOrder;
@@ -172,8 +212,11 @@ namespace Ludotheque.Controllers
         }
 
         // GET: Games/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
+            //todo: details n'est pas la vue d'un jeu mais de son etat
+
             if (id == null)
             {
                 return NotFound();
@@ -198,6 +241,7 @@ namespace Ludotheque.Controllers
         }
 
         // GET: Games/Create
+        [Authorize]
         public IActionResult Create()
         {
             var game = new Game();
@@ -216,6 +260,7 @@ namespace Ludotheque.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize)]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,MinPlayer,MaxPlayer,MinimumAge,GameTime,Price,ReleaseDate,BuyLink,VideoLink,PictureLink,Validate,DifficultyId,IllustratorId,EditorId")] Game game, string[] selectedThemes, string[] selectedMs, string[] selectedMecha)
         {
 
@@ -259,7 +304,7 @@ namespace Ludotheque.Controllers
         }
 
         // GET: Games/Edit/5
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -285,6 +330,7 @@ namespace Ludotheque.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,MinPlayer,MaxPlayer,MinimumAge,GameTime,Price,ReleaseDate,BuyLink,VideoLink,PictureLink,Validate,DifficultyId,IllustratorId,EditorId")] Game game, string[] selectedThemes, string[] selectedMs, string[] selectedMecha)
         {
             decimal prix = game.Price;
@@ -330,6 +376,7 @@ namespace Ludotheque.Controllers
 
 
         // GET: Games/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -350,6 +397,7 @@ namespace Ludotheque.Controllers
         // POST: Games/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var game = await _context.Games.FindAsync(id);

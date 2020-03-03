@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Ludotheque.Migrations.LudothequeAccount
+namespace Ludotheque.Migrations
 {
     [DbContext(typeof(LudothequeAccountContext))]
     partial class LudothequeAccountContextModelSnapshot : ModelSnapshot

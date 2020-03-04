@@ -7,11 +7,14 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Ludotheque.Areas.Identity.Data;
 
 namespace Ludotheque.Models
 {
     public class SeedData
     {
+
         public static async Task Initialize(IServiceProvider serviceProvider, string testUserPw)
         {
             using (var context = new LudothequeAccountContext(
@@ -23,75 +26,50 @@ namespace Ludotheque.Models
                 // allowed user can create and edit contacts that they create
                 var managerID = await EnsureUser(serviceProvider, testUserPw, "remy.launois@contoso.com");
                 await EnsureRole(serviceProvider, managerID, "manager");*/
+                var userManager = serviceProvider.GetService<UserManager<LudothequeUser>>();
+                var roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
 
-                await SeedDB(context);
+
+                await SeedDB(context, userManager, roleManager);
             }
+
         }
-        /*private static async Task<string> EnsureUser(IServiceProvider serviceProvider,
-                                            string testUserPw, string UserName)
-        {
-            var userManager = serviceProvider.GetService<UserManager<IdentityUser>>();
-
-            var user = await userManager.FindByNameAsync(UserName);
-            if (user == null)
-            {
-                user = new IdentityUser
-                {
-                    UserName = UserName,
-                    EmailConfirmed = true
-                };
-                await userManager.CreateAsync(user, testUserPw);
-            }
-
-            if (user == null)
-            {
-                throw new Exception("The password is probably not strong enough!");
-            }
-
-            return user.Id;
-        }
-
-        private static async Task<IdentityResult> EnsureRole(IServiceProvider serviceProvider,
-                                                                      string uid, string role)
-        {
-            IdentityResult IR = null;
-            var roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
-
-            if (roleManager == null)
-            {
-                throw new Exception("roleManager null");
-            }
-
-            if (!await roleManager.RoleExistsAsync(role))
-            {
-                IR = await roleManager.CreateAsync(new IdentityRole(role));
-            }
-
-            var userManager = serviceProvider.GetService<UserManager<IdentityUser>>();
-
-            var user = await userManager.FindByIdAsync(uid);
-
-            if (user == null)
-            {
-                throw new Exception("The testUserPw password was probably not strong enough!");
-            }
-
-            IR = await userManager.AddToRoleAsync(user, role);
-
-            return IR;
-        }*/
-
-
-
-        public static  async Task SeedDB(LudothequeAccountContext context)
+     
+        public static  async Task SeedDB(LudothequeAccountContext context, UserManager<LudothequeUser> userManager, RoleManager<IdentityRole> roleManager)
         {
 
             //======================================= Delete all data (temporary) =======================================
 
             //DropAllData(context);
-           
-            //======================================= Add Editors =======================================
-            if (!context.Editors.Any())
+
+
+            if (!roleManager.RoleExistsAsync("Admin").Result )
+            {
+                IdentityRole identityRole = new IdentityRole
+                {
+                    Name = "Admin"
+                };
+                await roleManager.CreateAsync(identityRole);
+
+            }
+            if (userManager.FindByEmailAsync("spprtludotheque@gmail.com").Result == null)
+            {
+                LudothequeUser identityUser = new LudothequeUser
+                {
+                    UserName = "spprtludotheque@gmail.com",
+                    Email = "spprtludotheque@gmail.com",
+                    EmailConfirmed = true
+                };
+                IdentityResult result = userManager.CreateAsync(identityUser, "Password.1234").Result;
+
+                if (result.Succeeded)
+                {
+                    userManager.AddToRoleAsync(identityUser,"Admin").Wait();
+                }
+
+            };
+                //======================================= Add Editors =======================================
+                if (!context.Editors.Any())
                 {
                     context.Editors.AddRange(
 
@@ -116,9 +94,31 @@ namespace Ludotheque.Models
                     AddInDataBase(editors, context);
 
                 }
-                
-                //======================================= Add Difficulty =======================================
-                if (!context.Difficulties.Any())
+            //======================================= Add Illustrators =======================================
+            if (!context.Illustrators.Any())
+            {
+                context.Illustrators.AddRange(
+
+                );
+                var illu = new Illustrator[]
+                {
+                        new Illustrator
+                        {
+                            FirstName = "Alex ",
+                            LastName = "Pierangelini"
+                        },
+                        new Illustrator
+                        {
+                            FirstName = "Xavier ",
+                            LastName = "Colette"
+                        }
+                };
+                AddInDataBase(illu, context);
+
+            }
+
+            //======================================= Add Difficulty =======================================
+            if (!context.Difficulties.Any())
                 {
                     var diff = new Difficulty[]
                     {
@@ -156,6 +156,10 @@ namespace Ludotheque.Models
                         new Theme
                         {
                             Name = "Rêve"
+                        },
+                        new Theme
+                        {
+                            Name = "Science fiction"
                         }
 
                     };
@@ -179,6 +183,10 @@ namespace Ludotheque.Models
                         new MaterialSupport
                         {
                             Name = "Plateau"
+                        },
+                        new MaterialSupport
+                        {
+                            Name = "Figurines"
                         }
 
                     };
@@ -207,6 +215,14 @@ namespace Ludotheque.Models
                         new Mechanism
                         {
                             Name = "Economie"
+                        },
+                        new Mechanism
+                        {
+                            Name = "Physique"
+                        },
+                        new Mechanism
+                        {
+                            Name = "Devinettes"
                         }
 
                     };
@@ -218,6 +234,7 @@ namespace Ludotheque.Models
 
                 var difficultiesList = context.Difficulties;
                 var ediors = context.Editors;
+                var illustrat = context.Illustrators;
 
                 //======================================= Add Games =======================================
 
@@ -235,7 +252,8 @@ namespace Ludotheque.Models
                             MinPlayer = 2,
                             MinimumAge = 14,
                             DifficultyId = difficultiesList.Single(s => s.label == Label.Hard).Id,
-                            EditorId = ediors.Single(s => s.Name == "Asmodee").Id
+                            EditorId = ediors.Single(s => s.Name == "Asmodee").Id,
+                            IllustratorId = illustrat.Single(s => s.LastName =="Colette").Id
                         },
                         new Game
                         {
@@ -318,6 +336,11 @@ namespace Ludotheque.Models
                             GameId = contextGames.Single(s => s.Name == "When I Dream").Id,
                             ThemeId = contextTheme.Single(s => s.Name == "Rêve").Id,
 
+                        },new ThemesGames()
+                        {
+                            GameId = contextGames.Single(s => s.Name == "Not Alone").Id,
+                            ThemeId = contextTheme.Single(s => s.Name == "Science fiction").Id,
+
                         }
 
                     };
@@ -346,9 +369,38 @@ namespace Ludotheque.Models
 
                     };
                     AddInDataBase(materialSupportsGames, context);
+                //======================================= Add Mechansim =======================================
+                var contextMechansim = context.Mechanism;
+
+                var MechaGames = new MechanismsGames[]
+                {
+                        new MechanismsGames()
+                        {
+                            GameId = contextGames.Single(s => s.Name == "Abyss").Id,
+                            MechanismId = contextMaterialSupport.Single(s => s.Name == "Economie").Id,
+
+                        }, new MechanismsGames()
+                        {
+                            GameId = contextGames.Single(s => s.Name == "Bang").Id,
+                            MechanismId = contextMaterialSupport.Single(s => s.Name == "Mensonges").Id,
+
+                        }, new MechanismsGames()
+                        {
+                            GameId = contextGames.Single(s => s.Name == "Bang").Id,
+                            MechanismId = contextMaterialSupport.Single(s => s.Name == "Collaboration").Id,
+
+                        },new MechanismsGames()
+                        {
+                            GameId = contextGames.Single(s => s.Name == "When I Dream").Id,
+                            MechanismId = contextMaterialSupport.Single(s => s.Name == "Devinettes").Id,
+
+                        }
+
+                };
+                AddInDataBase(materialSupportsGames, context);
 
 
-                }
+            }
 
         }
         

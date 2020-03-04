@@ -56,6 +56,17 @@ namespace Ludotheque.Services
             return gamesList.Where(s => s.Name.Contains(searchString));
         }
         /// <summary>
+        /// Get all games validate by admin
+        /// </summary>
+        /// <param name="gamesList">The list to filter</param>
+        /// <returns></returns>
+        public IQueryable<Game> GetGamesValidate(IQueryable<Game> gamesList )
+        {
+            return  from g in gamesList
+                        where g.Validate == true
+                        select g;
+        }
+        /// <summary>
         /// Get game by id
         /// </summary>
         /// <param name="id"> id of the game looking for</param>

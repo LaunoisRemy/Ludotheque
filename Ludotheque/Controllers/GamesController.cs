@@ -45,7 +45,7 @@ namespace Ludotheque.Controllers
                 games = _gameService.GetGames();
                 searchString = currentFilter;
             }
-
+            games = _gameService.GetGamesValidate(games);
             GamesIndexData gamesAllData = await SortGames(searchString,sortOrder,currentFilter,pageNumber,games);
 
 

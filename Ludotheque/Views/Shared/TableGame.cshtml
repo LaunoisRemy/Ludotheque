@@ -1,4 +1,6 @@
 ﻿@model Ludotheque.Models.GamesIndexData
+@inject Microsoft.AspNetCore.Identity.SignInManager<Ludotheque.Areas.Identity.Data.LudothequeUser> signInManager;
+
 @{
     ViewData["Title"] = "Index";
     Layout = "_Layout";
@@ -54,9 +56,13 @@
             <th>
                 Mecanismes
             </th>
-            <th>
+            @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+            {
+                <th>
+                    Gérer
+                </th>
+            }
 
-            </th>
         </tr>
     </thead>
     <tbody>
@@ -93,13 +99,13 @@
                     <a asp-action="Difficulty" asp-route-id="@item.DifficultyId">
                         @Html.DisplayFor(modelItem => item.Difficulty.label)
                     </a>
-                   
+
                 </td>
                 <td>
                     <a asp-action="Editor" asp-route-id="@item.EditorId">
                         @Html.DisplayFor(modelItem => item.Editor.Name)
                     </a>
-                    
+
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Illustrator.LastName)
@@ -110,7 +116,7 @@
                         <a asp-action="Theme" asp-route-id="@t.ThemeId">
                             @t.Theme.Name <br />
                         </a>
-                        
+
                     }
                 </td>
                 <td>
@@ -124,17 +130,21 @@
                 <td>
                     @foreach (var t in item.MechanismsGames)
                     {
-                    <a asp-action="MaterialSupport" asp-route-id="@t.MechanismId">
-                        @t.Mechanism.Name <br />
-                    </a>
-                       
+                        <a asp-action="MaterialSupport" asp-route-id="@t.MechanismId">
+                            @t.Mechanism.Name <br />
+                        </a>
+
                     }
                 </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
+                @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                {
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                }
+
 
             </tr>
         }

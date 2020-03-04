@@ -224,7 +224,6 @@ namespace Ludotheque.Controllers
             else
             {
                 int _id = (int) id;
-                //var game = await _gameService.GetGameById(_id);
                 var game = await _gameService.GetGameWithCategories((int)id);
 
                 if (game == null)
@@ -260,7 +259,7 @@ namespace Ludotheque.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize)]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,MinPlayer,MaxPlayer,MinimumAge,GameTime,Price,ReleaseDate,BuyLink,VideoLink,PictureLink,Validate,DifficultyId,IllustratorId,EditorId")] Game game, string[] selectedThemes, string[] selectedMs, string[] selectedMecha)
         {
 

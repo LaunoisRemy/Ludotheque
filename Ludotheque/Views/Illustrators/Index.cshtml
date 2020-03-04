@@ -1,4 +1,6 @@
 ﻿@model IEnumerable<Ludotheque.Models.Illustrator>
+@inject Microsoft.AspNetCore.Identity.SignInManager<Ludotheque.Areas.Identity.Data.LudothequeUser> signInManager;
+
 
 @{
     ViewData["Title"] = "Index";
@@ -6,9 +8,12 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+}
 <table class="table">
     <thead>
         <tr>
@@ -18,24 +23,31 @@
             <th>
                 @Html.DisplayNameFor(model => model.LastName)
             </th>
-            <th></th>
+            @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+            {
+                <th>Gérer</th>
+            }
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                {
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                }
+            </tr>
+        }
     </tbody>
 </table>

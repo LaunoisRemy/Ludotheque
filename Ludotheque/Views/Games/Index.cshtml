@@ -1,15 +1,18 @@
-﻿@{
+﻿@inject Microsoft.AspNetCore.Identity.SignInManager<Ludotheque.Areas.Identity.Data.LudothequeUser> signInManager;
+
+@{
     ViewData["Title"] = "Index";
     Layout = "TableGame";
 }
 @section Head{
     <h1>Index</h1>
-
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
-    @*  asp-controller = Nom du controller; asp-action = nom de l'action du controller, lien href ; method = *@
-
+    @if (signInManager.IsSignedIn(User))
+    {
+        <p>
+            <a asp-action="Create">Create New</a>
+        </p>
+        @*  asp-controller = Nom du controller; asp-action = nom de l'action du controller, lien href ; method = *@
+    }
     <form asp-action="Index" method="get">
         <div class="form-actions no-color">
             <p>

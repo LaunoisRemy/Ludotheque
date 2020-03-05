@@ -6,6 +6,10 @@
 }
 @section Head{
     <h1>Mes jeux</h1>
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    <div asp-validation-summary="All" class="text-danger">
+    </div>
+
     <form asp-action="Index" method="get">
         <div class="form-actions no-color">
             <p>

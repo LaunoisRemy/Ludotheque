@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Ludotheque.Areas.Identity.Data;
@@ -33,12 +34,13 @@ namespace Ludotheque.Controllers
 
         }
 
-        public async Task<IActionResult> IndexAsync(string searchString, string sortOrder, string currentFilter, int? pageNumber)
+        public async Task<IActionResult> Index(string searchString, string sortOrder, string currentFilter, int? pageNumber)
         {
-            var u = await userManager.FindByEmailAsync(User.Identity.Name);
+            LudothequeUser user = await UserServices.GetUserAsync(userManager, User.Identity.Name);
+
             IQueryable<Game> games;
-            var userTmp = await userManager.FindByIdAsync(u.Id);
-            games = _gameService.GetGamesByUser(u.Id);
+
+            games = _gameService.GetGamesByUser(user.Id);
             if (!String.IsNullOrEmpty(searchString))
             {
                 games = _gameService.GetGamesByName(searchString,games);
@@ -51,7 +53,7 @@ namespace Ludotheque.Controllers
             games = _gameService.GetGamesValidate(games);
             GamesIndexData gamesAllData = await SortGames(searchString, sortOrder, currentFilter, pageNumber, games);
 
-
+            ViewBag.MyGames = "true";
             return View(gamesAllData);
         }
 
@@ -76,33 +78,73 @@ namespace Ludotheque.Controllers
 
         }
 
-        /*[HttpPost]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteGame(int id)
         {
-            var gameUser = _context.GamesUser.Single(s => s.User.Id.Equals(id));
+            LudothequeUser user = await UserServices.GetUserAsync(userManager, User.Identity.Name);
+
+
+            var gameUser = _context.GamesUser.Single(s => s.GameId == id && s.LudothequeUserId.Equals(user.Id) );
 
             if (gameUser == null)
             {
-                ViewBag.ErrorMessage = $"Role with Id = {id} cannot be found";
-                return View("NotFound");
+                return NotFound();
             }
             else
             {
-                var result = await roleManager.DeleteAsync(role);
+                var result =  _context.GamesUser.Remove(gameUser);
+                await _context.SaveChangesAsync();
 
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("ListRoles");
-                }
-
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError("", error.Description);
-                }
-
-                return View("ListRoles");
+                return RedirectToAction(nameof(Index));
             }
-        }*/
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddGame(int id)
+        {
+            LudothequeUser user = await UserServices.GetUserAsync(userManager, User.Identity.Name);
+
+
+            var game = await _context.Games.FindAsync(id);
+
+            if (game == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                bool notFIndGame = _context.GamesUser.Single(s => s.GameId == id && s.LudothequeUserId.Equals(user.Id)) == null;
+                GamesUser gamesUser = new GamesUser
+                {
+                    Game = game,
+                    GameId = game.Id,
+                    User = user,
+                    LudothequeUserId = user.Id
+                };
+
+                if (ModelState.IsValid)
+                {
+                    if (notFIndGame)
+                    {
+                        var result = await _context.AddAsync(gamesUser);
+
+                        //var result = _context.GamesUser.AddAsync(gamesUser);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index), "Games");
+
+                    }
+                    else
+                    {
+                        TempData["message"] = "Le jeu existe déja dans votre ludotheque";
+                        return RedirectToAction(nameof(Index), "Games");
+                    }
+
+                }
+                return NotFound();
+
+
+            }
+        }
     }
 }

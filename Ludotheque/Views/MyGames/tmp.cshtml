@@ -1,0 +1,31 @@
+﻿
+@{
+    ViewData["Title"] = "tmp";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>tmp</h1>
+@*
+<div class="card mb-3">
+    <div class="card-header">
+        Jeux : @item.Name
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">@item.Description</h5>
+    </div>
+    <div class="card-footer">
+        <form method="post" asp-action="DeleteGame" asp-route-id="@item.Id">
+            <span id="confirmDeleteSpan_@item.Id" style="display:none">
+                <span>Are you sure you want to delete?</span>
+                <button type="submit" class="btn btn-danger">Yes</button>
+                <a href="#" class="btn btn-role"
+                   onclick="confirmDelete('@item.Id', false)">No</a>
+            </span>
+
+            <span id="deleteSpan_@item.Id">
+                <a href="#" class="btn btn-danger"
+                   onclick="confirmDelete('@item.Id', true)">Delete</a>
+            </span>
+        </form>
+    </div>
+</div>*@

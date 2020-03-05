@@ -6,6 +6,9 @@
 }
 @section Head{
     <h1>Index</h1>
+
+    @TempData["message"];
+
     @if (signInManager.IsSignedIn(User))
     {
         <p>

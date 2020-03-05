@@ -67,6 +67,17 @@ namespace Ludotheque.Services
                         select g;
         }
         /// <summary>
+        /// Get all games no validate by admin
+        /// </summary>
+        /// <param name="gamesList">The list to filter</param>
+        /// <returns></returns>
+        public IQueryable<Game> GetGamesNoValidate(IQueryable<Game> gamesList)
+        {
+            return from g in gamesList
+                   where g.Validate == false
+                   select g;
+        }
+        /// <summary>
         /// Get game by id
         /// </summary>
         /// <param name="id"> id of the game looking for</param>
@@ -157,7 +168,22 @@ namespace Ludotheque.Services
                 .Include(g => g.Illustrator)
                 .Where(c => c.DifficultyId == id);
         }
+        /// <summary>
+        /// Get game by user
+        /// </summary>
+        /// <param name="id">  user id of the games we looking for</param>
+        /// <returns> game </returns>
+        public IQueryable<Game> GetGamesByUser(string id)
+        {
+            var idGames = from gt in _context.GamesUser
+                          where gt.LudothequeUserId.Equals(id)
+                          select gt.Game.Id;
 
+            return _context.Games.Include(g => g.Difficulty)
+                .Include(g => g.Editor)
+                .Include(g => g.Illustrator)
+                .Where(c => idGames.Contains(c.Id));
+        }
         /// <summary>
         /// Add game in database
         /// </summary>
@@ -225,6 +251,8 @@ namespace Ludotheque.Services
 
             return games;
         }
+
+
         /// <summary>
         /// Method get all categories ( Themes,Material support, Mechanisms) of a game
         /// </summary>
@@ -243,15 +271,17 @@ namespace Ludotheque.Services
             return g;
         }
 
-        //===================== Methos who concern relation many to many, very similar ==========================
-        //Todo : factorize code but how?
 
-        /// <summary>
-        /// Give a list of Theme for a game
-        /// </summary>
-        /// <param name="game">Game we are looking theme</param>
-        /// <returns>List of theme of the game</returns>
-        public List<AssignedCategories> PopulateAssignedThemesData(Game game)
+
+            //===================== Methos who concern relation many to many, very similar ==========================
+            //Todo : factorize code but how?
+
+            /// <summary>
+            /// Give a list of Theme for a game
+            /// </summary>
+            /// <param name="game">Game we are looking theme</param>
+            /// <returns>List of theme of the game</returns>
+            public List<AssignedCategories> PopulateAssignedThemesData(Game game)
         {
             var gameTheme = new HashSet<int>(game.ThemesGames.Select(c => c.ThemeId));
             var allTheme = _context.Theme;
@@ -419,7 +449,6 @@ namespace Ludotheque.Services
                 }
             }
         }
-
 
     }
 }

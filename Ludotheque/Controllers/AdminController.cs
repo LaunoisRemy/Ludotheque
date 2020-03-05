@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ludotheque.Areas.Identity.Data;
+using Ludotheque.Data;
 using Ludotheque.Models;
+using Ludotheque.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,12 +17,18 @@ namespace Ludotheque.Controllers
     {
         private readonly RoleManager<IdentityRole> roleManager;
 
-        public readonly UserManager<LudothequeUser> userManager;
+        public readonly UserManager<LudothequeUser> userManager; 
+        private readonly LudothequeAccountContext _context;
+        private GamesService _gameService;
+        private GameAllDataService _gameAllDataService;
 
-        public AdminController(RoleManager<IdentityRole> roleManager, UserManager<LudothequeUser> userManager)
+        public AdminController(LudothequeAccountContext context,RoleManager<IdentityRole> roleManager, UserManager<LudothequeUser> userManager)
         {
             this.roleManager = roleManager;
             this.userManager = userManager;
+            _gameService = new GamesService(context);
+            _gameAllDataService = new GameAllDataService(context);
+
         }
         [HttpGet]
         public IActionResult CreateRole()
@@ -237,6 +245,28 @@ namespace Ludotheque.Controllers
             }
 
             return RedirectToAction("EditRole", new { Id = roleId });
+        }
+
+
+        public async Task<IActionResult> ProposedGames(string searchString, string sortOrder, string currentFilter, int? pageNumber)
+        {
+
+            IQueryable<Game> games;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                games = _gameService.GetGamesByName(searchString);
+                pageNumber = 1;
+            }
+            else
+            {
+                games = _gameService.GetGames();
+                searchString = currentFilter;
+            }
+            games = _gameService.GetGamesNoValidate(games);
+
+            GamesIndexData gamesAllData = await _gameAllDataService.GetGamesAndCategories(games);
+
+            return View(gamesAllData);
         }
     }
 }

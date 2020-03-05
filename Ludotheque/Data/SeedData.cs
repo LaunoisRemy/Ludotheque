@@ -20,12 +20,6 @@ namespace Ludotheque.Models
             using (var context = new LudothequeAccountContext(
             serviceProvider.GetRequiredService<DbContextOptions<LudothequeAccountContext>>()))
             {
-                /*var adminID = await EnsureUser(serviceProvider, testUserPw, "spprtludotheque@gmail.com");
-                await EnsureRole(serviceProvider, adminID, "admin");
-
-                // allowed user can create and edit contacts that they create
-                var managerID = await EnsureUser(serviceProvider, testUserPw, "remy.launois@contoso.com");
-                await EnsureRole(serviceProvider, managerID, "manager");*/
                 var userManager = serviceProvider.GetService<UserManager<LudothequeUser>>();
                 var roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
 
@@ -241,8 +235,8 @@ namespace Ludotheque.Models
                 // Look for any games.
                 if (!context.Games.Any())
                 {
-                    var games = new Game[]
-                    {
+                var games = new Game[]
+                {
                         new Game
                         {
                             Name = "Abyss",
@@ -253,7 +247,8 @@ namespace Ludotheque.Models
                             MinimumAge = 14,
                             DifficultyId = difficultiesList.Single(s => s.label == Label.Hard).Id,
                             EditorId = ediors.Single(s => s.Name == "Asmodee").Id,
-                            IllustratorId = illustrat.Single(s => s.LastName =="Colette").Id
+                            IllustratorId = illustrat.Single(s => s.LastName =="Colette").Id,
+                            Validate = true
                         },
                         new Game
                         {
@@ -262,7 +257,8 @@ namespace Ludotheque.Models
                             Price = 0,
                             MaxPlayer = 10,
                             MinPlayer = 5,
-                            MinimumAge = 18
+                            MinimumAge = 18,
+                            Validate = true
                         },
                         new Game
                         {
@@ -271,7 +267,8 @@ namespace Ludotheque.Models
                             Price = 11.99m,
                             MaxPlayer = 8,
                             MinPlayer = 2,
-                            MinimumAge = 8
+                            MinimumAge = 8,
+                            Validate = true
                         }, new Game
                         {
                             Name = "Bang the bullet",
@@ -279,7 +276,8 @@ namespace Ludotheque.Models
                             Price = 36.00m,
                             MaxPlayer = 8,
                             MinPlayer = 3,
-                            MinimumAge = 8
+                            MinimumAge = 8,
+                            Validate = true
                         }, new Game
                         {
                             Name = "Bang",
@@ -288,6 +286,7 @@ namespace Ludotheque.Models
                             MaxPlayer = 7,
                             MinPlayer = 4,
                             MinimumAge = 8,
+                            Validate = true
                         }, new Game
                         {
                             Name = "Sheriff de Nottingham",
@@ -296,6 +295,7 @@ namespace Ludotheque.Models
                             MaxPlayer = 5,
                             MinPlayer = 3,
                             MinimumAge = 13,
+                            Validate = true
                         }, new Game
                         {
                             Name = "When I dream",
@@ -305,7 +305,8 @@ namespace Ludotheque.Models
                             MinPlayer = 4,
                             MinimumAge = 8,
                             GameTime = 30,
-                            EditorId = ediors.Single(s => s.Name == "Repos Production").Id
+                            EditorId = ediors.Single(s => s.Name == "Repos Production").Id,
+                            Validate = false
                         }, new Game
                         {
                             Name = "Not Alone",
@@ -315,7 +316,8 @@ namespace Ludotheque.Models
                             MinPlayer = 4,
                             MinimumAge = 8,
                             GameTime = 30 ,
-                            EditorId = ediors.Single(s => s.Name == "Geek Attitude Games").Id
+                            EditorId = ediors.Single(s => s.Name == "Geek Attitude Games").Id,
+                            Validate = true
                         }
                     };
                     AddInDataBase(games, context);

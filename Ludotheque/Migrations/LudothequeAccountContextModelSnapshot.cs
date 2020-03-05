@@ -183,6 +183,21 @@ namespace Ludotheque.Migrations
                     b.ToTable("Games");
                 });
 
+            modelBuilder.Entity("Ludotheque.Models.GamesUser", b =>
+                {
+                    b.Property<int>("GameId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LudothequeUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("GameId", "LudothequeUserId");
+
+                    b.HasIndex("LudothequeUserId");
+
+                    b.ToTable("GamesUser");
+                });
+
             modelBuilder.Entity("Ludotheque.Models.Illustrator", b =>
                 {
                     b.Property<int>("Id")
@@ -457,6 +472,21 @@ namespace Ludotheque.Migrations
                     b.HasOne("Ludotheque.Models.Illustrator", "Illustrator")
                         .WithMany("Games")
                         .HasForeignKey("IllustratorId");
+                });
+
+            modelBuilder.Entity("Ludotheque.Models.GamesUser", b =>
+                {
+                    b.HasOne("Ludotheque.Models.Game", "Game")
+                        .WithMany("GamesUser")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Ludotheque.Areas.Identity.Data.LudothequeUser", "User")
+                        .WithMany("GamesUser")
+                        .HasForeignKey("LudothequeUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Ludotheque.Models.MaterialSupportsGames", b =>

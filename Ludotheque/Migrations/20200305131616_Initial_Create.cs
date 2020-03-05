@@ -267,6 +267,30 @@ namespace Ludotheque.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "GamesUser",
+                columns: table => new
+                {
+                    GameId = table.Column<int>(nullable: false),
+                    LudothequeUserId = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GamesUser", x => new { x.GameId, x.LudothequeUserId });
+                    table.ForeignKey(
+                        name: "FK_GamesUser_Games_GameId",
+                        column: x => x.GameId,
+                        principalTable: "Games",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GamesUser_AspNetUsers_LudothequeUserId",
+                        column: x => x.LudothequeUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MaterialSupportsGames",
                 columns: table => new
                 {
@@ -414,6 +438,11 @@ namespace Ludotheque.Migrations
                 column: "IllustratorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_GamesUser_LudothequeUserId",
+                table: "GamesUser",
+                column: "LudothequeUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MaterialSupportsGames_MaterialSupportId",
                 table: "MaterialSupportsGames",
                 column: "MaterialSupportId");
@@ -450,6 +479,9 @@ namespace Ludotheque.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "GamesUser");
 
             migrationBuilder.DropTable(
                 name: "MaterialSupportsGames");

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using Ludotheque.Areas.Identity.Data;
 
 namespace Ludotheque.Models
 {
@@ -81,6 +82,7 @@ namespace Ludotheque.Models
         public ICollection<MaterialSupportsGames> MaterialSupportsGames { get; set; }
         [Display(Name = "Mécanisme")]
         public ICollection<MechanismsGames> MechanismsGames { get; set; }
+        public ICollection<GamesUser> GamesUser { get; set; }
 
 
 

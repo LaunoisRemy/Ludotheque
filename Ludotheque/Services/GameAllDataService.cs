@@ -71,6 +71,26 @@ namespace Ludotheque.Services
 
         }
 
+        public async Task<GamesIndexData> SortGamesIndex(IQueryable<Game> games, int? pageNumber, string sortOrder)
+        {
+
+            GamesIndexData gamesAllData = new GamesIndexData();
+
+
+            games = _gameServices.SortGames(games, sortOrder);
+            int pageSize = 3;
+            PaginatedList<Game> pl =
+                await PaginatedList<Game>.CreateAsync(games, pageNumber ?? 1, pageSize);
+            var gamesTmp = from g in games
+                           where pl.Contains(g)
+                           select g;
+
+            gamesAllData = await GetGamesAndCategories(gamesTmp);
+            gamesAllData.PageIndex = pl.PageIndex;
+            gamesAllData.TotalPages = pl.TotalPages;
+            return gamesAllData;
+        }
+
         /// <summary>
         /// Get all games that contain the searchString in name
         /// </summary>

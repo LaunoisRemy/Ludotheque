@@ -22,8 +22,8 @@ namespace Ludotheque.Controllers
         public GamesController(LudothequeAccountContext context)
         {
             _context = context;
-            _gameService = new GamesService(context);;
-            _gameAllDataService = new GameAllDataService(context);;
+            _gameService = new GamesService(context);
+            _gameAllDataService = new GameAllDataService(context);
 
         }
 
@@ -34,6 +34,7 @@ namespace Ludotheque.Controllers
             //Todo : Si ecran trop petit afficher des colonnes en moins
             //Todo : limiter le nombre de catégories montrées a 3
             //Todo : Probleme si critères vide sort ne trie pas bien
+
             IQueryable<Game> games;
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -51,6 +52,7 @@ namespace Ludotheque.Controllers
 
             return View(gamesAllData);
         }
+
         /// <summary>
         /// Controller to list games of one editor 
         /// </summary>
@@ -74,6 +76,8 @@ namespace Ludotheque.Controllers
             ViewBag.EditorDesc = editor.Description;
 
             IQueryable<Game> games = _gameService.GetGamesByEditor(id);
+            games = _gameService.GetGamesValidate(games);
+
             GamesIndexData gamesAllData = await SortGames(currentFilter, sortOrder, currentFilter, pageNumber, games);
             return View(gamesAllData);
         }
@@ -100,6 +104,8 @@ namespace Ludotheque.Controllers
             ViewBag.ThemeDesc = t.Description;
 
             IQueryable<Game> games = _gameService.GetGamesByTheme(id);
+            games = _gameService.GetGamesValidate(games);
+
             GamesIndexData gamesAllData = await SortGames(currentFilter, sortOrder, currentFilter, pageNumber, games);
             return View(gamesAllData);
         }
@@ -125,6 +131,7 @@ namespace Ludotheque.Controllers
             ViewBag.MsDesc = t.Description;
 
             IQueryable<Game> games = _gameService.GetGamesByMs(id);
+            games = _gameService.GetGamesValidate(games);
             GamesIndexData gamesAllData = await SortGames(currentFilter, sortOrder, currentFilter, pageNumber, games);
             return View(gamesAllData);
         }
@@ -151,6 +158,7 @@ namespace Ludotheque.Controllers
             ViewBag.MDesc = t.Description;
 
             IQueryable<Game> games = _gameService.GetGamesByMecha(id);
+            games = _gameService.GetGamesValidate(games);
             GamesIndexData gamesAllData = await SortGames(currentFilter, sortOrder, currentFilter, pageNumber, games);
             return View(gamesAllData);
         }
@@ -167,6 +175,7 @@ namespace Ludotheque.Controllers
             ViewBag.DiffName = t.label;
 
             IQueryable<Game> games = _gameService.GetGamesByDifficulty(id);
+            games = _gameService.GetGamesValidate(games);
             GamesIndexData gamesAllData = await SortGames(currentFilter, sortOrder, currentFilter, pageNumber, games);
             return View(gamesAllData);
         }
@@ -178,7 +187,7 @@ namespace Ludotheque.Controllers
 
             // Sort by column
             ViewBag.NameSortParam = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewBag.DateSortParam = sortOrder == "Date" ? "date_desc" : "Date";
+            //ViewBag.DateSortParam = sortOrder == "Date" ? "date_desc" : "Date";
             ViewBag.PriceSortParam = sortOrder == "Price" ? "price_desc" : "Price";
             ViewBag.MinPlSortParam = sortOrder == "Min" ? "min_desc" : "Min";
             ViewBag.MaxPlSortParam = sortOrder == "Max" ? "max_desc" : "Max";
@@ -189,25 +198,7 @@ namespace Ludotheque.Controllers
             ViewBag.EditorSortParam = sortOrder == "Editor" ? "editor_desc" : "Editor";
             ViewBag.CurrentFilter = searchString;
 
-            GamesIndexData gamesAllData = new GamesIndexData();
-
-
-
-            games = _gameService.SortGames(games, sortOrder);
-            //gamesAllData = _gameAllDataService.SortGamesIndexData(gamesAllData, sortOrder);
-
-            //games =  gamesAllData.Games.AsQueryable();
-            int pageSize = 3;
-            PaginatedList<Game> pl =
-                await PaginatedList<Game>.CreateAsync(games, pageNumber ?? 1, pageSize);
-            var gamesTmp = from g in games
-                where pl.Contains(g)
-                select g;
-
-            gamesAllData = await _gameAllDataService.GetGamesAndCategories(gamesTmp);
-            gamesAllData.PageIndex = pl.PageIndex;
-            gamesAllData.TotalPages = pl.TotalPages;
-            return gamesAllData;
+            return await _gameAllDataService.SortGamesIndex(games,pageNumber,sortOrder);
 
         }
 

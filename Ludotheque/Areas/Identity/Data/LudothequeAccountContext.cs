@@ -26,6 +26,7 @@ namespace Ludotheque.Data
         public DbSet<Ludotheque.Models.MaterialSupportsGames> MaterialSupportsGames { get; set; }
         public DbSet<Ludotheque.Models.Mechanism> Mechanism { get; set; }
         public DbSet<Ludotheque.Models.MechanismsGames> MechanismsGames { get; set; }
+        public DbSet<Ludotheque.Models.GamesUser> GamesUser { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -43,6 +44,7 @@ namespace Ludotheque.Data
             modelBuilder.Entity<MaterialSupportsGames>().ToTable("MaterialSupportsGames");
             modelBuilder.Entity<Mechanism>().ToTable("Mechanisms");
             modelBuilder.Entity<MechanismsGames>().ToTable("MechanismsGames");
+            modelBuilder.Entity<GamesUser>().ToTable("GamesUser");
 
             modelBuilder.Entity<ThemesGames>()
                 .HasKey(c => new { c.GameId, c.ThemeId });
@@ -50,6 +52,9 @@ namespace Ludotheque.Data
                 .HasKey(c => new { c.GameId, c.MaterialSupportId });
             modelBuilder.Entity<MechanismsGames>()
                 .HasKey(c => new { c.GameId, c.MechanismId });
+            modelBuilder.Entity<GamesUser>()
+                .HasKey(c => new { c.GameId, c.LudothequeUserId });
+
             modelBuilder.Entity<ThemesGames>()
                 .HasOne(bc => bc.Theme)
                 .WithMany(b => b.ThemesGames)
@@ -75,6 +80,15 @@ namespace Ludotheque.Data
             modelBuilder.Entity<MechanismsGames>()
                 .HasOne(bc => bc.Game)
                 .WithMany(c => c.MechanismsGames)
+                .HasForeignKey(bc => bc.GameId);
+
+            modelBuilder.Entity<GamesUser>()
+                .HasOne(bc => bc.User)
+                .WithMany(b => b.GamesUser)
+                .HasForeignKey(bc => bc.LudothequeUserId);
+            modelBuilder.Entity<GamesUser>()
+                .HasOne(bc => bc.Game)
+                .WithMany(c => c.GamesUser)
                 .HasForeignKey(bc => bc.GameId);
         }
     }

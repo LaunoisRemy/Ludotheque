@@ -187,7 +187,7 @@ namespace Ludotheque.Controllers
 
             // Sort by column
             ViewBag.NameSortParam = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            //ViewBag.DateSortParam = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewBag.DateSortParam = sortOrder == "Date" ? "date_desc" : "Date";
             ViewBag.PriceSortParam = sortOrder == "Price" ? "price_desc" : "Price";
             ViewBag.MinPlSortParam = sortOrder == "Min" ? "min_desc" : "Min";
             ViewBag.MaxPlSortParam = sortOrder == "Max" ? "max_desc" : "Max";

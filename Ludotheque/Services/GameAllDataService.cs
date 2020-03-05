@@ -86,6 +86,8 @@ namespace Ludotheque.Services
                            select g;
 
             gamesAllData = await GetGamesAndCategories(gamesTmp);
+            gamesAllData = _gameServices.SortGames(gamesAllData, sortOrder);
+
             gamesAllData.PageIndex = pl.PageIndex;
             gamesAllData.TotalPages = pl.TotalPages;
             return gamesAllData;

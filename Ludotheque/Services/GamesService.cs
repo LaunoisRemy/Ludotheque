@@ -92,6 +92,9 @@ namespace Ludotheque.Services
 
             return game;
         }
+
+
+
         /// <summary>
         /// Get game by editor
         /// </summary>
@@ -251,7 +254,57 @@ namespace Ludotheque.Services
 
             return games;
         }
-
+        internal GamesIndexData SortGames(GamesIndexData gamesAllData, string sortOrder)
+        {
+            var games = gamesAllData.Games;
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    games = games.OrderByDescending(s => s.Name);
+                    break;
+                case "Date":
+                    games = games.OrderBy(s => s.ReleaseDate);
+                    break;
+                case "date_desc":
+                    games = games.OrderByDescending(s => s.ReleaseDate);
+                    break;
+                case "Price":
+                    games = games.OrderBy(s => s.Price);
+                    break;
+                case "price_desc":
+                    games = games.OrderByDescending(s => s.Price);
+                    break;
+                case "Min":
+                    games = games.OrderBy(s => s.MinPlayer);
+                    break;
+                case "min_desc":
+                    games = games.OrderByDescending(s => s.MinPlayer);
+                    break;
+                case "Max":
+                    games = games.OrderBy(s => s.MaxPlayer);
+                    break;
+                case "max_desc":
+                    games = games.OrderByDescending(s => s.MaxPlayer);
+                    break;
+                case "Age":
+                    games = games.OrderBy(s => s.MinimumAge);
+                    break;
+                case "age_desc":
+                    games = games.OrderByDescending(s => s.MinimumAge);
+                    break;
+                case "Time":
+                    games = games.OrderBy(s => s.GameTime);
+                    break;
+                case "time_desc":
+                    games = games.OrderByDescending(s => s.GameTime);
+                    break;
+                default:
+                    games = games.OrderBy(s => s.Name);
+                    break;
+            }
+            gamesAllData.Games = games;
+            return gamesAllData;
+        }
 
         /// <summary>
         /// Method get all categories ( Themes,Material support, Mechanisms) of a game

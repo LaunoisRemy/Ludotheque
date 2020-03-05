@@ -248,7 +248,8 @@ namespace Ludotheque.Models
                             DifficultyId = difficultiesList.Single(s => s.label == Label.Hard).Id,
                             EditorId = ediors.Single(s => s.Name == "Asmodee").Id,
                             IllustratorId = illustrat.Single(s => s.LastName =="Colette").Id,
-                            Validate = true
+                            Validate = true,
+                            ReleaseDate = 2014
                         },
                         new Game
                         {
@@ -258,7 +259,8 @@ namespace Ludotheque.Models
                             MaxPlayer = 10,
                             MinPlayer = 5,
                             MinimumAge = 18,
-                            Validate = true
+                            Validate = true,
+                            ReleaseDate = 2014
                         },
                         new Game
                         {
@@ -268,7 +270,8 @@ namespace Ludotheque.Models
                             MaxPlayer = 8,
                             MinPlayer = 2,
                             MinimumAge = 8,
-                            Validate = true
+                            Validate = true,
+                            ReleaseDate = 2013
                         }, new Game
                         {
                             Name = "Bang the bullet",
@@ -277,7 +280,8 @@ namespace Ludotheque.Models
                             MaxPlayer = 8,
                             MinPlayer = 3,
                             MinimumAge = 8,
-                            Validate = true
+                            Validate = true,
+                            ReleaseDate = 2013
                         }, new Game
                         {
                             Name = "Bang",
@@ -286,7 +290,8 @@ namespace Ludotheque.Models
                             MaxPlayer = 7,
                             MinPlayer = 4,
                             MinimumAge = 8,
-                            Validate = true
+                            Validate = true,
+                            ReleaseDate = 2011
                         }, new Game
                         {
                             Name = "Sheriff de Nottingham",
@@ -295,7 +300,8 @@ namespace Ludotheque.Models
                             MaxPlayer = 5,
                             MinPlayer = 3,
                             MinimumAge = 13,
-                            Validate = true
+                            Validate = true,
+                            ReleaseDate = 2016
                         }, new Game
                         {
                             Name = "When I dream",
@@ -306,7 +312,8 @@ namespace Ludotheque.Models
                             MinimumAge = 8,
                             GameTime = 30,
                             EditorId = ediors.Single(s => s.Name == "Repos Production").Id,
-                            Validate = false
+                            Validate = false,
+                            ReleaseDate = 2017
                         }, new Game
                         {
                             Name = "Not Alone",
@@ -317,7 +324,8 @@ namespace Ludotheque.Models
                             MinimumAge = 8,
                             GameTime = 30 ,
                             EditorId = ediors.Single(s => s.Name == "Geek Attitude Games").Id,
-                            Validate = true
+                            Validate = true,
+                            ReleaseDate = 2016
                         }
                     };
                     AddInDataBase(games, context);

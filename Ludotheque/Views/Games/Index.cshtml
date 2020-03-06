@@ -29,20 +29,13 @@
     <div asp-validation-summary="All">
     </div>
 
-    @if (signInManager.IsSignedIn(User))
-    {
-        <p>
-            <a asp-action="Create">Create New</a>
-        </p>
-        @*  asp-controller = Nom du controller; asp-action = nom de l'action du controller, lien href ; method = *@
-    }
     <form asp-action="Index" method="get">
-        <div class="form-actions no-color">
-            <p>
-                Nom : <input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
-                <input type="submit" value="Search" class="btn btn-default" /> |
-                <a asp-action="Index">Back to Full List</a>
-            </p>
+        <div class="input-group input-group-sm ">
+            <div class="form-actions no-color input-group-prepend">
+                <input placeholder="Name" class="form-control" type="text" name="SearchString" value="@ViewData["currentFilter"]" />
+                <input class="btn btn-success" role="button" type="submit" value="Search" />
+                <a class="btn btn-primary"  role="button" asp-action="Index">Index</a>
+            </div>
         </div>
     </form>
 }
@@ -59,15 +52,19 @@
        asp-route-sortOrder="@ViewData["CurrentSort"]"
        asp-route-pageNumber="@(Model.PageIndex - 1)"
        asp-route-currentFilter="@ViewData["CurrentFilter"]"
-       class="btn btn-default @prevDisabled">
+       class="btn btn-outline-secondary @prevDisabled">
         Previous
     </a>
     <a asp-action="Index"
        asp-route-sortOrder="@ViewData["CurrentSort"]"
        asp-route-pageNumber="@(Model.PageIndex + 1)"
        asp-route-currentFilter="@ViewData["CurrentFilter"]"
-       class="btn btn-default @nextDisabled">
+       class="btn btn-outline-secondary @nextDisabled">
         Next
     </a>
+    @if (signInManager.IsSignedIn(User))
+    {
+        <a type="button" class="btn btn-outline-primary" asp-action="Create">Create New</a>
+    }
 }
 

@@ -8,201 +8,214 @@
 }
 
 @RenderSection("Head", true)
-    <table class="table">
-        @if (ViewData["MyGames"] == null)
-        {
-            ViewData["MyGames"] = "false";
-        }
-        <thead>
-            <tr>
-                <th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Nom</a>
-                </th>
-
-                <th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewData["MinPlSortParam"]" asp-route-currentFilter="@ViewBag.CurrentFilter">Nombre de joueur minimum </a>
-                </th>
-                <th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewData["MaxPlSortParam"]" asp-route-currentFilter="@ViewBag.CurrentFilter">Nombre de joueur maximum </a>
-                </th>
-                <th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewData["AgeSortParam"]" asp-route-currentFilter="@ViewBag.CurrentFilter">Age minimum </a>
-                </th>
-                <th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewData["TimeSortParam"]" asp-route-currentFilter="@ViewBag.CurrentFilter">Temps de jeu </a>
-                </th>
-                <th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Prix</a>
-                <th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Date Sortie</a>
-                </th>
-                <th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewData["DiffSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Difficulté</a>
-
-                </th>
-                <th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewData["EditorSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Editor</a>
-
-                </th>
-                <th>
-                    <a asp-action="Index" asp-route-sortOrder="@ViewData["IlluSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Illustrator</a>
-
-                </th>
-                <th>
-                    Themes
-                </th>
-                <th>
-                    Supports materiel
-                </th>
-                <th>
-                    Mecanismes
-                </th>
-                @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
-                {
-                    <th>
-                        Gérer
-                    </th>
-                }
-                @if (ViewData["MyGames"].Equals("true"))
-                {
-                    <th>
-                        Mes jeux
-                    </th>
-                }
-
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var g in Model.GamesPoss)
+    <div class="table-responsive-xl">
+        <table class="table table-striped">
+            @if (ViewData["MyGames"] == null)
             {
-              
-            Game item = g.Item1;
-
-            <tr>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </a>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MinPlayer)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MaxPlayer)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MinimumAge)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.GameTime)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ReleaseDate)
-                </td>
-                <td>
-                    <a asp-action="Difficulty" asp-route-id="@item.DifficultyId">
-                        @Html.DisplayFor(modelItem => item.Difficulty.label)
-                    </a>
-
-                </td>
-                <td>
-                    <a asp-action="Editor" asp-route-id="@item.EditorId">
-                        @Html.DisplayFor(modelItem => item.Editor.Name)
-                    </a>
-
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Illustrator.LastName)
-                </td>
-                <td>
-                    @foreach (var t in item.ThemesGames)
-                    {
-                        <a asp-action="Theme" asp-route-id="@t.ThemeId">
-                            @t.Theme.Name <br />
-                        </a>
-
-                    }
-                </td>
-                <td>
-                    @foreach (var t in item.MaterialSupportsGames)
-                    {
-                        <a asp-action="MaterialSupport" asp-route-id="@t.MaterialSupportId">
-                            @t.MaterialSupport.Name <br />
-                        </a>
-                    }
-                </td>
-                <td>
-                    @foreach (var t in item.MechanismsGames)
-                    {
-                        <a asp-action="MaterialSupport" asp-route-id="@t.MechanismId">
-                            @t.Mechanism.Name <br />
-                        </a>
-
-                    }
-                </td>
-                @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
-                {
-                    <td>
-                        <a asp-controller="Games" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-controller="Games" asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-controller="Games" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-
-                    </td>
-                }
-                @if (signInManager.IsSignedIn(User))
-                {
-                    <td>
-                        @if (ViewData["MyGames"].Equals("false"))
-                        {
-                            @if(g.Item2 == false)
-                            {
-                                <form method="post"  asp-action="AddGameUser" asp-route-id="@item.Id">
-                                    <span id="confirmDeleteSpan_@item.Id" style="display:none">
-                                        <span>Are you sure you want to add this game?</span>
-                                        <button type="submit" class="btn btn-success">Yes</button>
-                                        <a href="#" class="btn btn-role"
-                                           onclick="confirmDelete('@item.Id', false)">No</a>
-                                    </span>
-                                    <span id="deleteSpan_@item.Id">
-                                        <a href="#" class="btn btn-success"
-                                           onclick="confirmDelete('@item.Id', true)" >Ajout</a>
-                                    </span>
-                                </form>
-                            }
-                            else
-                            {
-                                <button class="btn btn-info" disabled>Possédé </button>
-                            }
-
-                        }
-                        else if (ViewData["MyGames"].Equals("true"))
-                        {
-                        <form method="post" asp-action="DeleteGame" asp-route-id="@item.Id">
-                            <span id="confirmDeleteSpan_@item.Id" style="display:none">
-                                <span>Are you sure you want to delete?</span>
-                                <button type="submit" class="btn btn-danger">Yes</button>
-                                <a href="#" class="btn btn-role"
-                                   onclick="confirmDelete('@item.Id', false)">No</a>
-                            </span>
-
-                            <span id="deleteSpan_@item.Id">
-                                <a href="#" class="btn btn-danger"
-                                   onclick="confirmDelete('@item.Id', true)">Delete</a>
-                            </span>
-                        </form>
-                        }
-
-                    </td>
-                }
-
-
-
-            </tr>
+                ViewData["MyGames"] = "false";
             }
-        </tbody>
-    </table>
-@RenderSection("Bottom", true)
+            <thead >
+                <tr>
+                    <th scope="col">
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Nom</a>
+                    </th>
+
+                    <th scope="col">
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["MinPlSortParam"]" asp-route-currentFilter="@ViewBag.CurrentFilter">Nombre de joueur minimum </a>
+                    </th>
+
+                    <th scope="col">
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["MaxPlSortParam"]" asp-route-currentFilter="@ViewBag.CurrentFilter">Nombre de joueur maximum </a>
+                    </th>
+
+                    <th>
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["AgeSortParam"]" asp-route-currentFilter="@ViewBag.CurrentFilter">Age minimum </a>
+                    </th>
+
+                    <th scope="col">
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["TimeSortParam"]" asp-route-currentFilter="@ViewBag.CurrentFilter">Temps de jeu </a>
+                    </th>
+
+                    <th scope="col">
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["PriceSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Prix</a>
+                    </th>
+
+                    <th scope="col">
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Date Sortie</a>
+                    </th>
+
+                    <th scope="col">
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["DiffSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Difficulté</a>
+
+                    </th>
+
+                    <th scope="col">
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["EditorSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Editor</a>
+
+                    </th>
+
+                    <th scope="col">
+                        <a asp-action="Index" asp-route-sortOrder="@ViewData["IlluSortParam"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Illustrator</a>
+
+                    </th>
+
+                    <th scope="col">
+                        Themes
+                    </th>
+                    <th>
+                        Supports materiel
+                    </th>
+                    <th scope="col">
+                        Mecanismes
+                    </th>
+                    @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {
+                        <th scope="col">
+                            Gérer
+                        </th>
+                    }
+                    @if (signInManager.IsSignedIn(User) && (ViewData["MyGames"].Equals("true") || ViewData["MyGames"].Equals("false") ) )
+                    {
+                        <th scope="col">
+                            Mes jeux
+                        </th>
+                    }
+
+                    </tr>
+</thead>
+            <tbody>
+                @foreach (var g in Model.GamesPoss)
+                {
+
+                    Game item = g.Item1;
+
+                    <tr>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.Id">
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </a>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MinPlayer)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MaxPlayer)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MinimumAge)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.GameTime)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Price)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ReleaseDate)
+                        </td>
+                        <td>
+                            <a asp-action="Difficulty" asp-route-id="@item.DifficultyId">
+                                @Html.DisplayFor(modelItem => item.Difficulty.label)
+                            </a>
+
+                        </td>
+                        <td>
+                            <a asp-action="Editor" asp-route-id="@item.EditorId">
+                                @Html.DisplayFor(modelItem => item.Editor.Name)
+                            </a>
+
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Illustrator.LastName)
+                        </td>
+                        <td>
+                            @foreach (var t in item.ThemesGames)
+                            {
+                                <a asp-action="Theme" asp-route-id="@t.ThemeId">
+                                    @t.Theme.Name <br />
+                                </a>
+
+                            }
+                        </td>
+                        <td>
+                            @foreach (var t in item.MaterialSupportsGames)
+                            {
+                                <a asp-action="MaterialSupport" asp-route-id="@t.MaterialSupportId">
+                                    @t.MaterialSupport.Name <br />
+                                </a>
+                            }
+                        </td>
+                        <td>
+                            @foreach (var t in item.MechanismsGames)
+                            {
+                                <a asp-action="MaterialSupport" asp-route-id="@t.MechanismId">
+                                    @t.Mechanism.Name <br />
+                                </a>
+
+                            }
+                        </td>
+                        @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        {
+                            <td>
+                                <a asp-controller="Games" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                                <a asp-controller="Games" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                                <a asp-controller="Games" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+
+                            </td>
+                        }
+                        @if (signInManager.IsSignedIn(User))
+                        {
+                            <td>
+                                @if (ViewData["MyGames"].Equals("false"))
+                                {
+                                    @if (g.Item2 == false)
+                                    {
+                                        <form method="post" asp-action="AddGameUser" asp-route-id="@item.Id">
+                                            <span id="confirmDeleteSpan_@item.Id" style="display:none">
+                                                <span>Are you sure you want to add this game?</span>
+                                                <button type="submit" class="btn btn-success">Yes</button>
+                                                <a href="#" class="btn btn-role"
+                                                   onclick="confirmDelete('@item.Id', false)">No</a>
+                                            </span>
+                                            <span id="deleteSpan_@item.Id">
+                                                <a href="#" class="btn btn-success"
+                                                   onclick="confirmDelete('@item.Id', true)">Ajout</a>
+                                            </span>
+
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-info" disabled>Possédé </button>
+                                    }
+
+                                }
+                                else if (ViewData["MyGames"].Equals("true"))
+                                {
+                                    <form method="post" asp-action="DeleteGame" asp-route-id="@item.Id">
+                                        <span id="confirmDeleteSpan_@item.Id" style="display:none">
+                                            <span>Are you sure you want to delete?</span>
+                                            <button type="submit" class="btn btn-danger">Yes</button>
+                                            <a href="#" class="btn btn-role"
+                                               onclick="confirmDelete('@item.Id', false)">No</a>
+                                        </span>
+
+                                        <span id="deleteSpan_@item.Id">
+                                            <a href="#" class="btn btn-danger"
+                                               onclick="confirmDelete('@item.Id', true)">Delete</a>
+                                        </span>
+                                    </form>
+                                }
+
+                            </td>
+                        }
+
+
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+        </div>
+    @RenderSection("Bottom", true)
 

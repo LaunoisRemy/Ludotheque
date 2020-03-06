@@ -9,9 +9,7 @@
 <h1>Index</h1>
 @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
 {
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
+    <a type="button" class="btn btn-outline-primary" asp-action="Create">Create New</a>
 }
 
 <table class="table">
@@ -31,16 +29,16 @@
         {
             <tr>
                 <td>
-                    <a href="/Games/Difficulty/@item.Id">
+                    <a type="button" class="btn btn-outline-info" href="/Games/Difficulty/@item.Id">
                         @Html.DisplayFor(modelItem => item.label)
                     </a>
                 </td>
                 @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                 {
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a class="btn btn-primary" role="button" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a class="btn btn-secondary" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                     </td>
                 }
 

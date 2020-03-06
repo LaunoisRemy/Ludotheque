@@ -4,7 +4,7 @@
     Layout = "TableGame";
 }
 @section Head{
-    <h1>"@ViewData["MsName"]"</h1>
+    <h1>@ViewData["MsName"]</h1>
     @if (@ViewData["MsDesc"] != null)
     {
         <p>"@ViewData["MsDesc"]"</p>
@@ -24,15 +24,15 @@
        asp-route-sortOrder="@ViewData["CurrentSort"]"
        asp-route-pageNumber="@(Model.PageIndex - 1)"
        asp-route-currentFilter="@ViewData["CurrentFilter"]"
-       class="btn btn-default @prevDisabled">
+       class="btn btn-outline-secondary @prevDisabled">
         Previous
     </a>
     <a asp-action="MaterialSupport"
        asp-route-sortOrder="@ViewData["CurrentSort"]"
        asp-route-pageNumber="@(Model.PageIndex + 1)"
        asp-route-currentFilter="@ViewData["CurrentFilter"]"
-       class="btn btn-default @nextDisabled">
+       class="btn btn-outline-secondary @nextDisabled">
         Next
     </a>
-    <a asp-action="Index" class="btn btn-default"> Back to All Games</a>
+    <a asp-action="Index" class="btn btn-outline-dark"> Back to All Games</a>
 }

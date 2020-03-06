@@ -73,8 +73,11 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.Games)
+            @foreach (var g in Model.GamesPoss)
             {
+              
+            Game item = g.Item1;
+
             <tr>
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id">
@@ -143,9 +146,9 @@
                 @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                 {
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a asp-controller="Games" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-controller="Games" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-controller="Games" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
 
                     </td>
                 }
@@ -154,21 +157,28 @@
                     <td>
                         @if (ViewData["MyGames"].Equals("false"))
                         {
-                        <form method="post" asp-action="AddGameUser" asp-route-id="@item.Id">
-                            <span id="confirmDeleteSpan_@item.Id" style="display:none">
-                                <span>Are you sure you want to add this game?</span>
-                                <button type="submit" class="btn btn-success">Yes</button>
-                                <a href="#" class="btn btn-role"
-                                   onclick="confirmDelete('@item.Id', false)">No</a>
-                            </span>
+                            @if(g.Item2 == false)
+                            {
+                                <form method="post"  asp-action="AddGameUser" asp-route-id="@item.Id">
+                                    <span id="confirmDeleteSpan_@item.Id" style="display:none">
+                                        <span>Are you sure you want to add this game?</span>
+                                        <button type="submit" class="btn btn-success">Yes</button>
+                                        <a href="#" class="btn btn-role"
+                                           onclick="confirmDelete('@item.Id', false)">No</a>
+                                    </span>
+                                    <span id="deleteSpan_@item.Id">
+                                        <a href="#" class="btn btn-success"
+                                           onclick="confirmDelete('@item.Id', true)" >Ajout</a>
+                                    </span>
+                                </form>
+                            }
+                            else
+                            {
+                                <button class="btn btn-info" disabled>Possédé </button>
+                            }
 
-                            <span id="deleteSpan_@item.Id">
-                                <a href="#" class="btn btn-success"
-                                   onclick="confirmDelete('@item.Id', true)">Ajout</a>
-                            </span>
-                        </form>
                         }
-                        else
+                        else if (ViewData["MyGames"].Equals("true"))
                         {
                         <form method="post" asp-action="DeleteGame" asp-route-id="@item.Id">
                             <span id="confirmDeleteSpan_@item.Id" style="display:none">

@@ -125,6 +125,29 @@ namespace Ludotheque.Services
         }
 
 
+        public GamesIndexData GamesPoss(GamesIndexData gamesAllData,string userId)
+        {
+            List<(Game, bool)> ls = new List<(Game, bool)>();
+
+            foreach (Game g in gamesAllData.Games)
+            {
+                bool FindGame = userId !=null && _context.GamesUser.SingleOrDefault(s => s.GameId == g.Id && s.LudothequeUserId.Equals(userId)) != null;
+                if (FindGame)
+                {
+                    ls.Add((g, true));
+
+                }
+                else
+                {
+                    ls.Add((g, false));
+
+                }
+
+            }
+            gamesAllData.GamesPoss = ls;
+            return gamesAllData;
+        }
+
 
     }
 }

@@ -265,7 +265,8 @@ namespace Ludotheque.Controllers
             games = _gameService.GetGamesNoValidate(games);
 
             GamesIndexData gamesAllData = await _gameAllDataService.GetGamesAndCategories(games);
-
+            gamesAllData = _gameAllDataService.GamesPoss(gamesAllData, null);
+            ViewBag.MyGames = "Neither";
             return View(gamesAllData);
         }
     }

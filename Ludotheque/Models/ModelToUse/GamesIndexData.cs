@@ -15,6 +15,7 @@ namespace Ludotheque.Models
         public int TotalPages { get; set; }
 
         public IEnumerable<Game> Games { get; set; }
+        public IEnumerable<(Game,bool)> GamesPoss { get; set; } 
         public IEnumerable<Theme> Themes { get; set; }
         public IEnumerable<MaterialSupport> MaterialSupports { get; set; }
         public IEnumerable<Mechanism> Mechanisms { get; set; }
@@ -38,5 +39,6 @@ namespace Ludotheque.Models
                 return (PageIndex < TotalPages);
             }
         }
+
     }
 }

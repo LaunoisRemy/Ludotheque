@@ -52,6 +52,7 @@ namespace Ludotheque.Controllers
             }
             games = _gameService.GetGamesValidate(games);
             GamesIndexData gamesAllData = await SortGames(searchString, sortOrder, currentFilter, pageNumber, games);
+            gamesAllData = _gameAllDataService.GamesPoss(gamesAllData, user.Id);
 
             ViewBag.MyGames = "true";
             return View(gamesAllData);

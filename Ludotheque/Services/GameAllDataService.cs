@@ -71,6 +71,19 @@ namespace Ludotheque.Services
 
         }
 
+        internal GamesIndexData NoGamesPoss(GamesIndexData gamesAllData)
+        {
+            List<(Game, bool)> ls = new List<(Game, bool)>();
+
+            foreach (Game g in gamesAllData.Games)
+            {
+                ls.Add((g, false));
+
+            }
+            gamesAllData.GamesPoss = ls;
+            return gamesAllData;
+        }
+
         public async Task<GamesIndexData> SortGamesIndex(IQueryable<Game> games, int? pageNumber, string sortOrder)
         {
 

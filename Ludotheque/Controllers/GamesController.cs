@@ -52,8 +52,17 @@ namespace Ludotheque.Controllers
             }
             games = _gameService.GetGamesValidate(games);
             GamesIndexData gamesAllData = await SortGames(searchString,sortOrder,currentFilter,pageNumber,games);
-            LudothequeUser user = await UserServices.GetUserAsync(userManager, User.Identity.Name);
-            gamesAllData = _gameAllDataService.GamesPoss(gamesAllData, user.Id);
+            bool isAuthenticated = User.Identity.IsAuthenticated;
+            if (isAuthenticated)
+            {
+                LudothequeUser user = await UserServices.GetUserAsync(userManager, User.Identity.Name);
+                gamesAllData = _gameAllDataService.GamesPoss(gamesAllData, user.Id);
+            }
+            else
+            {
+                gamesAllData = _gameAllDataService.NoGamesPoss(gamesAllData);
+            }
+
 
             return View(gamesAllData);
         }
@@ -84,8 +93,16 @@ namespace Ludotheque.Controllers
             games = _gameService.GetGamesValidate(games);
 
             GamesIndexData gamesAllData = await SortGames(currentFilter, sortOrder, currentFilter, pageNumber, games);
-            LudothequeUser user = await UserServices.GetUserAsync(userManager, User.Identity.Name);
-            gamesAllData = _gameAllDataService.GamesPoss(gamesAllData, user.Id);
+            bool isAuthenticated = User.Identity.IsAuthenticated;
+            if (isAuthenticated)
+            {
+                LudothequeUser user = await UserServices.GetUserAsync(userManager, User.Identity.Name);
+                gamesAllData = _gameAllDataService.GamesPoss(gamesAllData, user.Id);
+            }
+            else
+            {
+                gamesAllData = _gameAllDataService.NoGamesPoss(gamesAllData);
+            }
             return View(gamesAllData);
         }
         /// <summary>
@@ -114,8 +131,16 @@ namespace Ludotheque.Controllers
             games = _gameService.GetGamesValidate(games);
 
             GamesIndexData gamesAllData = await SortGames(currentFilter, sortOrder, currentFilter, pageNumber, games);
-            LudothequeUser user = await UserServices.GetUserAsync(userManager, User.Identity.Name);
-            gamesAllData = _gameAllDataService.GamesPoss(gamesAllData, user.Id);
+            bool isAuthenticated = User.Identity.IsAuthenticated;
+            if (isAuthenticated)
+            {
+                LudothequeUser user = await UserServices.GetUserAsync(userManager, User.Identity.Name);
+                gamesAllData = _gameAllDataService.GamesPoss(gamesAllData, user.Id);
+            }
+            else
+            {
+                gamesAllData = _gameAllDataService.NoGamesPoss(gamesAllData);
+            }
             return View(gamesAllData);
         }
         /// <summary>
@@ -142,8 +167,16 @@ namespace Ludotheque.Controllers
             IQueryable<Game> games = _gameService.GetGamesByMs(id);
             games = _gameService.GetGamesValidate(games);
             GamesIndexData gamesAllData = await SortGames(currentFilter, sortOrder, currentFilter, pageNumber, games);
-            LudothequeUser user = await UserServices.GetUserAsync(userManager, User.Identity.Name);
-            gamesAllData = _gameAllDataService.GamesPoss(gamesAllData, user.Id);
+            bool isAuthenticated = User.Identity.IsAuthenticated;
+            if (isAuthenticated)
+            {
+                LudothequeUser user = await UserServices.GetUserAsync(userManager, User.Identity.Name);
+                gamesAllData = _gameAllDataService.GamesPoss(gamesAllData, user.Id);
+            }
+            else
+            {
+                gamesAllData = _gameAllDataService.NoGamesPoss(gamesAllData);
+            }
             return View(gamesAllData);
         }
         /// <summary>
@@ -171,8 +204,16 @@ namespace Ludotheque.Controllers
             IQueryable<Game> games = _gameService.GetGamesByMecha(id);
             games = _gameService.GetGamesValidate(games);
             GamesIndexData gamesAllData = await SortGames(currentFilter, sortOrder, currentFilter, pageNumber, games);
-            LudothequeUser user = await UserServices.GetUserAsync(userManager, User.Identity.Name);
-            gamesAllData = _gameAllDataService.GamesPoss(gamesAllData, user.Id);
+            bool isAuthenticated = User.Identity.IsAuthenticated;
+            if (isAuthenticated)
+            {
+                LudothequeUser user = await UserServices.GetUserAsync(userManager, User.Identity.Name);
+                gamesAllData = _gameAllDataService.GamesPoss(gamesAllData, user.Id);
+            }
+            else
+            {
+                gamesAllData = _gameAllDataService.NoGamesPoss(gamesAllData);
+            }
             return View(gamesAllData);
         }
         [AllowAnonymous]
@@ -190,8 +231,16 @@ namespace Ludotheque.Controllers
             IQueryable<Game> games = _gameService.GetGamesByDifficulty(id);
             games = _gameService.GetGamesValidate(games);
             GamesIndexData gamesAllData = await SortGames(currentFilter, sortOrder, currentFilter, pageNumber, games);
-            LudothequeUser user = await UserServices.GetUserAsync(userManager, User.Identity.Name);
-            gamesAllData = _gameAllDataService.GamesPoss(gamesAllData, user.Id);
+            bool isAuthenticated = User.Identity.IsAuthenticated;
+            if (isAuthenticated)
+            {
+                LudothequeUser user = await UserServices.GetUserAsync(userManager, User.Identity.Name);
+                gamesAllData = _gameAllDataService.GamesPoss(gamesAllData, user.Id);
+            }
+            else
+            {
+                gamesAllData = _gameAllDataService.NoGamesPoss(gamesAllData);
+            }
             return View(gamesAllData);
         }
 

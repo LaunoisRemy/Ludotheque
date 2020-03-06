@@ -14,7 +14,7 @@ namespace Ludotheque.Services
 
         public static async Task<LudothequeUser> GetUserAsync(UserManager<LudothequeUser> userManager, string name)
         {
-            var u = await userManager.FindByEmailAsync(name);
+            var u = await userManager.FindByNameAsync(name);
             var userTmp = await userManager.FindByIdAsync(u.Id);
             return userTmp;
         }

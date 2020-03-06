@@ -9,6 +9,8 @@ using Ludotheque.Data;
 using Ludotheque.Models;
 using Ludotheque.Services;
 using Microsoft.AspNetCore.Authorization;
+using Ludotheque.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace Ludotheque.Controllers
 {
@@ -18,9 +20,11 @@ namespace Ludotheque.Controllers
         private readonly LudothequeAccountContext _context;
         private GamesService _gameService;
         private GameAllDataService _gameAllDataService;
+        public readonly UserManager<LudothequeUser> userManager;
 
-        public GamesController(LudothequeAccountContext context)
+        public GamesController(LudothequeAccountContext context, UserManager<LudothequeUser> userManager)
         {
+            this.userManager = userManager;
             _context = context;
             _gameService = new GamesService(context);
             _gameAllDataService = new GameAllDataService(context);
@@ -395,7 +399,56 @@ namespace Ludotheque.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddGameUser(int id)
+        {
+            LudothequeUser user = await UserServices.GetUserAsync(userManager, User.Identity.Name);
 
+
+            var game = await _context.Games.FindAsync(id);
+
+            if (game == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                bool notFIndGame = _context.GamesUser.SingleOrDefault(s => s.GameId == id && s.LudothequeUserId.Equals(user.Id)) == null;
+                GamesUser gamesUser = new GamesUser
+                {
+                    Game = game,
+                    GameId = game.Id,
+                    User = user,
+                    LudothequeUserId = user.Id
+                };
+
+                if (notFIndGame)
+                {
+                    var result = await _context.AddAsync(gamesUser);
+                    TempData["message"] = "Le jeu est ajouté dans votre ludotheque";
+                    TempData["success"] = "true";
+
+                    //var result = _context.GamesUser.AddAsync(gamesUser);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index), "Games");
+                }
+                else
+                {
+                    TempData["message"] = "Le jeu existe déja dans votre ludotheque";
+                    TempData["success"] = "false";
+
+                    return RedirectToAction(nameof(Index));
+                }
+
+
+            }
+        }
         //===================== Methods for controller
         private bool GameExists(int id)
         {

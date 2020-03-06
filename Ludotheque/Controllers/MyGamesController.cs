@@ -99,52 +99,6 @@ namespace Ludotheque.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddGame(int id)
-        {
-            LudothequeUser user = await UserServices.GetUserAsync(userManager, User.Identity.Name);
 
-
-            var game = await _context.Games.FindAsync(id);
-
-            if (game == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                bool notFIndGame = _context.GamesUser.Single(s => s.GameId == id && s.LudothequeUserId.Equals(user.Id)) == null;
-                GamesUser gamesUser = new GamesUser
-                {
-                    Game = game,
-                    GameId = game.Id,
-                    User = user,
-                    LudothequeUserId = user.Id
-                };
-
-                if (ModelState.IsValid)
-                {
-                    if (notFIndGame)
-                    {
-                        var result = await _context.AddAsync(gamesUser);
-
-                        //var result = _context.GamesUser.AddAsync(gamesUser);
-                        await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(Index), "Games");
-
-                    }
-                    else
-                    {
-                        TempData["message"] = "Le jeu existe déja dans votre ludotheque";
-                        return RedirectToAction(nameof(Index), "Games");
-                    }
-
-                }
-                return NotFound();
-
-
-            }
-        }
     }
 }

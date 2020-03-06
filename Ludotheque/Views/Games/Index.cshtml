@@ -7,7 +7,27 @@
 @section Head{
     <h1>Index</h1>
 
-    @TempData["message"];
+    @if (TempData["success"] != null)
+    {
+        if (TempData["success"].Equals("true"))
+        {
+            <div class="alert alert-success" role="alert">
+                @TempData["message"]
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning" role="alert">
+                @TempData["message"]
+            </div>
+        }
+
+    }
+
+
+
+    <div asp-validation-summary="All">
+    </div>
 
     @if (signInManager.IsSignedIn(User))
     {

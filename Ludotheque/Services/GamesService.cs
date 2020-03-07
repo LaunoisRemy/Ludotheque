@@ -206,102 +206,45 @@ namespace Ludotheque.Services
         /// <returns></returns>
         public IQueryable<Game> SortGames(IQueryable<Game> games, string sortOrder)
         {
-            switch (sortOrder)
+            games = sortOrder switch
             {
-                case "name_desc":
-                    games = games.OrderByDescending(s => s.Name);
-                    break;
-                case "Date":
-                    games = games.OrderBy(s => s.ReleaseDate);
-                    break;
-                case "date_desc":
-                    games = games.OrderByDescending(s => s.ReleaseDate);
-                    break;
-                case "Price":
-                    games = games.OrderBy(s => s.Price);
-                    break;
-                case "price_desc":
-                    games = games.OrderByDescending(s => s.Price);
-                    break;
-                case "Min":
-                    games = games.OrderBy(s => s.MinPlayer);
-                    break;
-                case "min_desc":
-                    games = games.OrderByDescending(s => s.MinPlayer);
-                    break;
-                case "Max":
-                    games = games.OrderBy(s => s.MaxPlayer);
-                    break;
-                case "max_desc":
-                    games = games.OrderByDescending(s => s.MaxPlayer);
-                    break;
-                case "Age":
-                    games = games.OrderBy(s => s.MinimumAge);
-                    break;
-                case "age_desc":
-                    games = games.OrderByDescending(s => s.MinimumAge);
-                    break;
-                case "Time":
-                    games = games.OrderBy(s => s.GameTime);
-                    break;
-                case "time_desc":
-                    games = games.OrderByDescending(s => s.GameTime);
-                    break;
-                default:
-                    games = games.OrderBy(s => s.Name);
-                    break;
-            }
-
+                "name_desc" => games.OrderByDescending(s => s.Name),
+                "Date" => games.OrderBy(s => s.ReleaseDate),
+                "date_desc" => games.OrderByDescending(s => s.ReleaseDate),
+                "Price" => games.OrderBy(s => s.Price),
+                "price_desc" => games.OrderByDescending(s => s.Price),
+                "Min" => games.OrderBy(s => s.MinPlayer),
+                "min_desc" => games.OrderByDescending(s => s.MinPlayer),
+                "Max" => games.OrderBy(s => s.MaxPlayer),
+                "max_desc" => games.OrderByDescending(s => s.MaxPlayer),
+                "Age" => games.OrderBy(s => s.MinimumAge),
+                "age_desc" => games.OrderByDescending(s => s.MinimumAge),
+                "Time" => games.OrderBy(s => s.GameTime),
+                "time_desc" => games.OrderByDescending(s => s.GameTime),
+                _ => games.OrderBy(s => s.Name),
+            };
             return games;
         }
         internal GamesIndexData SortGames(GamesIndexData gamesAllData, string sortOrder)
         {
             var games = gamesAllData.Games;
-            switch (sortOrder)
+            games = sortOrder switch
             {
-                case "name_desc":
-                    games = games.OrderByDescending(s => s.Name);
-                    break;
-                case "Date":
-                    games = games.OrderBy(s => s.ReleaseDate);
-                    break;
-                case "date_desc":
-                    games = games.OrderByDescending(s => s.ReleaseDate);
-                    break;
-                case "Price":
-                    games = games.OrderBy(s => s.Price);
-                    break;
-                case "price_desc":
-                    games = games.OrderByDescending(s => s.Price);
-                    break;
-                case "Min":
-                    games = games.OrderBy(s => s.MinPlayer);
-                    break;
-                case "min_desc":
-                    games = games.OrderByDescending(s => s.MinPlayer);
-                    break;
-                case "Max":
-                    games = games.OrderBy(s => s.MaxPlayer);
-                    break;
-                case "max_desc":
-                    games = games.OrderByDescending(s => s.MaxPlayer);
-                    break;
-                case "Age":
-                    games = games.OrderBy(s => s.MinimumAge);
-                    break;
-                case "age_desc":
-                    games = games.OrderByDescending(s => s.MinimumAge);
-                    break;
-                case "Time":
-                    games = games.OrderBy(s => s.GameTime);
-                    break;
-                case "time_desc":
-                    games = games.OrderByDescending(s => s.GameTime);
-                    break;
-                default:
-                    games = games.OrderBy(s => s.Name);
-                    break;
-            }
+                "name_desc" => games.OrderByDescending(s => s.Name),
+                "Date" => games.OrderBy(s => s.ReleaseDate),
+                "date_desc" => games.OrderByDescending(s => s.ReleaseDate),
+                "Price" => games.OrderBy(s => s.Price),
+                "price_desc" => games.OrderByDescending(s => s.Price),
+                "Min" => games.OrderBy(s => s.MinPlayer),
+                "min_desc" => games.OrderByDescending(s => s.MinPlayer),
+                "Max" => games.OrderBy(s => s.MaxPlayer),
+                "max_desc" => games.OrderByDescending(s => s.MaxPlayer),
+                "Age" => games.OrderBy(s => s.MinimumAge),
+                "age_desc" => games.OrderByDescending(s => s.MinimumAge),
+                "Time" => games.OrderBy(s => s.GameTime),
+                "time_desc" => games.OrderByDescending(s => s.GameTime),
+                _ => games.OrderBy(s => s.Name),
+            };
             gamesAllData.Games = games;
             return gamesAllData;
         }

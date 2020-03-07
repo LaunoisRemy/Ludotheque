@@ -1,8 +1,91 @@
-﻿@{
+﻿@model IEnumerable<Ludotheque.Models.Game>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Bienvenue sur ludothèque</h1>
+    <br />
+
+
+    <div class="container">
+         <div class="input-group input-group-sm ">
+            > Search :
+            <select id="SearchBy" >
+                <option value="Name">Nom</option>
+                <option value="MinPlayer">Joueurs minimum</option>
+                <option value="MaxPlayer">Joueurs maximum</option>
+                <option value="MinAge">Age</option>
+                <option value="GameTime">Temps de jeu</option>
+                <option value="Price">Prix</option>
+            </select>
+
+            @Html.TextBox("Search")<input type="submit" id="SearchBtn" value="Search" />
+         </div>
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th> Nom</th>
+                    <th> Joueur minimum</th>
+                    <th> Joueur maximum</th>
+                    <th> Age Minimum</th>
+                    <th> Temps de jeu (min)</th>
+                    <th> Prix</th>
+                </tr>
+            </thead>
+            <tbody id="DataSearching">
+                @foreach(var Item in Model)
+                {
+                    <tr>
+                        <td>@Item.Name</td>
+                        <td>@Item.MinPlayer</td>
+                        <td>@Item.MaxPlayer</td>
+                        <td>@Item.MinimumAge</td>
+                        <td>@Item.GameTime</td>
+                        <td>@Item.Price €</td>
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+         
+    </div>
 </div>
+
+@section Scripts{
+    <script >
+        $(document).ready(function () {
+            $("#SearchBtn").click(function () {
+                var SearchBy = $("#SearchBy").val();
+                var SearchValue = $("#Search").val();
+                var SetData = $("#DataSearching");
+                SetData.html("");
+                $.ajax({
+                    type: "post",
+                    url :"/Home/GetSearching?SearchBy=" + SearchBy + "&SearchValue=" + SearchValue,
+                    contentType : "html",
+                    success: function (result) {
+                        if (result.length == 0) {
+                            SetData.append('<tr><td>Aucun jeux trouvés</td></tr>');
+                        } else {
+                            $.each(result, function (index, value) {
+                                var Data = "<tr>" +
+                                    "<td>" + value.name + "</td>" +
+                                    "<td>" + value.minPlayer + "</td>" +
+                                    "<td>" + value.maxPlayer + "</td>" +
+                                    "<td>" + value.minimumAge + "</td>" +
+                                    "<td>" + value.gameTime + "</td>" +
+                                    "<td>" + value.price + " €</td>" +
+                                    "</tr>";
+                                SetData.append(Data);
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+ }

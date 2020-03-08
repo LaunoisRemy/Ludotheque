@@ -26,6 +26,7 @@ namespace Ludotheque.Controllers
         {
             this.roleManager = roleManager;
             this.userManager = userManager;
+            _context = context;
             _gameService = new GamesService(context);
             _gameAllDataService = new GameAllDataService(context);
 
@@ -110,7 +111,8 @@ namespace Ludotheque.Controllers
             if (role == null)
             {
                 ViewBag.ErrorMessage = $"Role with Id = {id} cannot be found";
-                return View("NotFound");
+                return NotFound();
+
             }
 
             var model = new EditRoleViewModel
@@ -118,15 +120,19 @@ namespace Ludotheque.Controllers
                 Id = role.Id,
                 RoleName = role.Name
             };
+            var listUserRoles = _context.UserRoles.ToList();
+
             // Retrieve all the Users
             foreach (var user in userManager.Users)
             {
-                // If the user is in this role, add the username to
-                // Users property of EditRoleViewModel. This model
-                // object is then passed to the view for display
-                if (await userManager.IsInRoleAsync(user, role.Name))
+
+                foreach (var userRole in listUserRoles)
                 {
-                    model.Users.Add(user.UserName);
+                    if (userRole.RoleId == role.Id && userRole.UserId == user.Id)
+                    {
+                        model.Users.Add(user.UserName);
+
+                    }
                 }
             }
 
@@ -144,7 +150,7 @@ namespace Ludotheque.Controllers
             if (role == null)
             {
                 ViewBag.ErrorMessage = $"Role with Id = {model.Id} cannot be found";
-                return View("NotFound");
+                return NotFound();
             }
             else
             {
@@ -180,25 +186,40 @@ namespace Ludotheque.Controllers
             }
 
             var model = new List<UserRoleViewModel>();
+            var listUserRoles = _context.UserRoles.ToList();
 
             foreach (var user in userManager.Users)
             {
+                //var t = listUserRoles.Where(s => s.UserId.Equals(user.Id));
+
                 var userRoleViewModel = new UserRoleViewModel
                 {
                     UserId = user.Id,
                     UserName = user.UserName
                 };
+                bool trouve = false;
+                foreach (var userRole in listUserRoles)
+                {
+                    if (userRole.RoleId == role.Id && userRole.UserId == user.Id)
+                    {
+                        trouve = true;
 
-                if (await userManager.IsInRoleAsync(user, role.Name))
+                    }
+
+                }
+
+                if (trouve)
                 {
                     userRoleViewModel.IsSelected = true;
+
                 }
                 else
                 {
                     userRoleViewModel.IsSelected = false;
                 }
-
                 model.Add(userRoleViewModel);
+
+
             }
 
             return View(model);

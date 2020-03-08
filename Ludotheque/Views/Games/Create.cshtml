@@ -1,4 +1,6 @@
 ﻿@model Ludotheque.Models.Game
+@inject Microsoft.AspNetCore.Identity.SignInManager<Ludotheque.Areas.Identity.Data.LudothequeUser> signInManager;
+
 
 @{
     ViewData["Title"] = "Create";
@@ -63,27 +65,32 @@
                 <span asp-validation-for="VideoLink" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PictureLink" class="control-label"></label>
-                <input asp-for="PictureLink" class="form-control" />
-                <span asp-validation-for="PictureLink" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="DifficultyId" class="control-label"></label>
-                <select asp-for="DifficultyId" class="form-control" asp-items="ViewBag.DifficultyId"></select>
+                <select asp-for="DifficultyId" class="form-control" asp-items="ViewBag.DifficultyId">
+                    <option value=-1>--- Difficultés ---</option>
+
+                </select>
             </div>
             <div class="form-group">
                 <label asp-for="IllustratorId" class="control-label"></label>
-                <select asp-for="IllustratorId" class="form-control" asp-items="ViewBag.IllustratorId"></select>
+                <select asp-for="IllustratorId" class="form-control" asp-items="ViewBag.IllustratorId">
+                    <option value=-1>--- Illustrateur ---</option>
+                </select>
             </div>
             <div class="form-group">
                 <label asp-for="EditorId" class="control-label"></label>
-                <select asp-for="EditorId" class="form-control" asp-items="ViewBag.EditorId"></select>
+                <select asp-for="EditorId" class="form-control" asp-items="ViewBag.EditorId">
+                    <option  value=-1>--- Editeur ---</option>
+                </select>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Validate" /> @Html.DisplayNameFor(model => model.Validate)
-                </label>
-            </div>
+            @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+            {
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Validate" /> @Html.DisplayNameFor(model => model.Validate)
+                    </label>
+                </div>
+            }
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
                     <table>
@@ -112,75 +119,75 @@
                             }
                         </table>
                     </div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <table>
-                        <tr><th>Support matériel :</th></tr>
-                        <tr>
-                        @{
-                            cnt = 0;
-                            List<Ludotheque.Models.AssignedCategories> ms = ViewBag.MaterialSupport;
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <table>
+                            <tr><th>Support matériel :</th></tr>
+                            <tr>
+                                @{
+                                    cnt = 0;
+                                    List<Ludotheque.Models.AssignedCategories> ms = ViewBag.MaterialSupport;
 
-                            foreach (var c in ms)
-                            {
-                                if (cnt++ % 3 == 0)
-                                {
-                                    @:</tr><tr>
+                                    foreach (var c in ms)
+                                    {
+                                        if (cnt++ % 3 == 0)
+                                        {
+                                        @:</tr><tr>
+                                        }
+                                        @:<td>
+                                            <input type="checkbox"
+                                                   name="selectedMs"
+                                                   value="@c.CategoryId"
+                                                   @(Html.Raw(c.Assigned ? "checked=\"checked\"" : "")) />
+                                            @c.Name
+                                        @:</td>
+                                    }
+                                @:</tr>
                                 }
-                                @:<td>
-                                <input type="checkbox"
-                                       name="selectedMs"
-                                       value="@c.CategoryId"
-                                       @(Html.Raw(c.Assigned ? "checked=\"checked\"" : ""))/>
-                                @c.Name
-                                @:</td>
-                            }
-                            @:</tr>
-                        }
-                    </table>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <table>
+                                <tr><th>Mecanismes:</th></tr>
+
+                                <tr>
+                                    @{
+                                        cnt = 0;
+                                        List<Ludotheque.Models.AssignedCategories> m = ViewBag.Mechanisms;
+
+                                        foreach (var c in m)
+                                        {
+                                            if (cnt++ % 3 == 0)
+                                            {
+                                            @:</tr><tr>
+                                            }
+                                            @:<td>
+                                                <input type="checkbox"
+                                                       name="selectedMecha"
+                                                       value="@c.CategoryId"
+                                                       @(Html.Raw(c.Assigned ? "checked=\"checked\"" : "")) />
+                                                @c.Name
+                                            @:</td>
+                                        }
+                                    @:</tr>
+                                    }
+                                </table>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Create" class="btn btn-primary" />
+                        </div>
+                    </form>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <table>
-                        <tr><th>Mecanismes:</th></tr>
 
-                        <tr>
-                            @{
-                                cnt = 0;
-                                List<Ludotheque.Models.AssignedCategories> m = ViewBag.Mechanisms;
-
-                                foreach (var c in m)
-                                {
-                                    if (cnt++ % 3 == 0)
-                                    {
-                                    @:</tr><tr>
-                                    }
-                                    @:<td>
-                                        <input type="checkbox"
-                                               name="selectedMecha"
-                                               value="@c.CategoryId"
-                                               @(Html.Raw(c.Assigned ? "checked=\"checked\"" : "")) />
-                                        @c.Name
-                                    @:</td>
-                                }
-                            @:</tr>
-                            }
-                        </table>
-                    </div>
+            <div>
+                <a asp-action="Index">Back to List</a>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary"/>
-            </div>
-        </form>
-    </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+            @section Scripts {
+                @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+            }

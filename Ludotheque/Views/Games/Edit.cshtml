@@ -75,17 +75,25 @@
             </div>
             <div class="form-group">
                 <label asp-for="Difficulty" class="control-label"></label>
-                <select asp-for="DifficultyId" class="form-control" asp-items="ViewBag.DifficultyId"></select>
+                <select asp-for="DifficultyId" class="form-control" asp-items="ViewBag.DifficultyId">
+                    <option value=-1>--- Difficultés ---</option>
+                </select>
                 <span asp-validation-for="DifficultyId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="IllustratorId" class="control-label">Illustrateur</label>
-                <select asp-for="IllustratorId" class="form-control" asp-items="ViewBag.IllustratorId"></select>
+                <select asp-for="IllustratorId" class="form-control" asp-items="ViewBag.IllustratorId">
+                    <option value=-1>--- Illustrateur ---</option>
+
+                </select>
                 <span asp-validation-for="IllustratorId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="EditorId" class="control-label">Editeur</label>
-                <select asp-for="EditorId" class="form-control" asp-items="ViewBag.EditorId"></select>
+                <select asp-for="EditorId" class="form-control" asp-items="ViewBag.EditorId">
+                    <option value=-1>--- Editeur ---</option>
+
+                </select>
                 <span asp-validation-for="EditorId" class="text-danger"></span>
             </div>
             <div class="form-group">

@@ -257,9 +257,6 @@ namespace Ludotheque.Controllers
             ViewBag.MaxPlSortParam = sortOrder == "Max" ? "max_desc" : "Max";
             ViewBag.AgeSortParam = sortOrder == "Age" ? "age_desc" : "Age";
             ViewBag.TimeSortParam = sortOrder == "Time" ? "time_desc" : "Time";
-            ViewBag.DiffSortParam = sortOrder == "DIff" ? "diff_desc" : "Diff";
-            ViewBag.IlluSortParam = sortOrder == "Illu" ? "Illu_desc" : "Illu";
-            ViewBag.EditorSortParam = sortOrder == "Editor" ? "editor_desc" : "Editor";
             ViewBag.CurrentFilter = searchString;
 
             return await _gameAllDataService.SortGamesIndex(games,pageNumber,sortOrder);
@@ -317,7 +314,18 @@ namespace Ludotheque.Controllers
         [Authorize]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,MinPlayer,MaxPlayer,MinimumAge,GameTime,Price,ReleaseDate,BuyLink,VideoLink,PictureLink,Validate,DifficultyId,IllustratorId,EditorId")] Game game, string[] selectedThemes, string[] selectedMs, string[] selectedMecha)
         {
-
+            if (game.EditorId == -1)
+            {
+                game.EditorId = null;
+            }
+            if (game.DifficultyId == -1)
+            {
+                game.DifficultyId = null;
+            }
+            if (game.IllustratorId == -1)
+            {
+                game.IllustratorId = null;
+            }
             if (selectedMecha != null)
             {
                 game.MechanismsGames = new List<MechanismsGames>();
@@ -350,6 +358,13 @@ namespace Ludotheque.Controllers
                 _context.Add(game);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                var errors = ModelState.Select(x => x.Value.Errors)
+                                       .Where(y => y.Count > 0)
+                                       .ToList();
+                var test = errors;
             }
             ViewDataRelationOtM(game);
 
@@ -403,6 +418,18 @@ namespace Ludotheque.Controllers
                 , i => i.ReleaseDate, i => i.BuyLink, i => i.VideoLink,
                 i => i.PictureLink, i => i.Validate, i => i.DifficultyId, i => i.IllustratorId, i => i.EditorId))
             {
+                if (gameToUpdate.EditorId == -1)
+                {
+                    gameToUpdate.EditorId = null;
+                }
+                if (gameToUpdate.DifficultyId == -1)
+                {
+                    gameToUpdate.DifficultyId = null;
+                }
+                if (gameToUpdate.IllustratorId == -1)
+                {
+                    gameToUpdate.IllustratorId = null;
+                }
                 _gameService.UpdateGamesThemes(selectedThemes, gameToUpdate);
                 _gameService.UpdateGamesMaterialSupport(selectedMs, gameToUpdate);
                 _gameService.UpdateGamesMechanisms(selectedMecha, gameToUpdate);

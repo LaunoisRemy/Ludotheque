@@ -12,6 +12,9 @@ using Ludotheque.Areas.Identity.Data;
 
 namespace Ludotheque.Models
 {
+    /// <summary>
+    /// Class to seed database
+    /// </summary>
     public class SeedData
     {
 

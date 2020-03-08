@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace Ludotheque.Models
 {
+    /// <summary>
+    /// Class to know if this games is own by user
+    /// </summary>
     public class PossessedGames
     {
         public Game Game { get; set; }

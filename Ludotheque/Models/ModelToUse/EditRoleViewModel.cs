@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Ludotheque.Models
 {
+    /// <summary>
+    /// Class for edit role
+    /// </summary>
     public class EditRoleViewModel
     {
         public EditRoleViewModel()

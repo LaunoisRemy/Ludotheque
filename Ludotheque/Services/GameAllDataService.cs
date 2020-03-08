@@ -9,6 +9,9 @@ using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace Ludotheque.Services
 {
+    /// <summary>
+    /// Class to deal with gameIndexData
+    /// </summary>
     public class GameAllDataService
     {
         private readonly LudothequeAccountContext _context;
@@ -71,6 +74,11 @@ namespace Ludotheque.Services
 
         }
 
+        /// <summary>
+        /// Method to fill posseded games with all false
+        /// </summary>
+        /// <param name="gamesAllData">games to fill</param>
+        /// <returns></returns>
         internal GamesIndexData NoGamesPoss(GamesIndexData gamesAllData)
         {
             List<(Game, bool)> ls = new List<(Game, bool)>();
@@ -83,7 +91,13 @@ namespace Ludotheque.Services
             gamesAllData.GamesPoss = ls;
             return gamesAllData;
         }
-
+        /// <summary>
+        /// Sort Games with all data
+        /// </summary>
+        /// <param name="games"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="sortOrder"></param>
+        /// <returns></returns>
         public async Task<GamesIndexData> SortGamesIndex(IQueryable<Game> games, int? pageNumber, string sortOrder)
         {
 
@@ -118,7 +132,12 @@ namespace Ludotheque.Services
             return await GetGamesAndCategories(games);
         }
 
-
+        /// <summary>
+        /// Just for transform five games of GamesIndexData as Queryable for SortGames
+        /// </summary>
+        /// <param name="games"></param>
+        /// <param name="sortOrder"></param>
+        /// <returns></returns>
         public GamesIndexData SortGamesIndexData(GamesIndexData games, string sortOrder)
         {
 
@@ -126,7 +145,7 @@ namespace Ludotheque.Services
             return games;
         }
 
-
+        [Obsolete]
         public List<Game> GetGamesPages(GamesIndexData games, int pageNumber, int pageSize)
         {
             var PageIndex = pageNumber;
@@ -137,7 +156,12 @@ namespace Ludotheque.Services
             return items;
         }
 
-
+        /// <summary>
+        /// Fill posseded games of gamesAllData for user 
+        /// </summary>
+        /// <param name="gamesAllData"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public GamesIndexData GamesPoss(GamesIndexData gamesAllData,string userId)
         {
             List<(Game, bool)> ls = new List<(Game, bool)>();

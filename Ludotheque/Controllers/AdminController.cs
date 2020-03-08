@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Ludotheque.Controllers
 {
+    /// <summary>
+    /// Controller for administrators
+    /// </summary>
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
@@ -172,6 +175,11 @@ namespace Ludotheque.Controllers
                 return View(model);
             }
         }
+        /// <summary>
+        /// Page to see all users for one role
+        /// </summary>
+        /// <param name="roleId"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> EditUsersInRole(string roleId)
         {
@@ -268,7 +276,14 @@ namespace Ludotheque.Controllers
             return RedirectToAction("EditRole", new { Id = roleId });
         }
 
-
+        /// <summary>
+        /// Controller for list of games no validate
+        /// </summary>
+        /// <param name="searchString"></param>
+        /// <param name="sortOrder"></param>
+        /// <param name="currentFilter"></param>
+        /// <param name="pageNumber"></param>
+        /// <returns></returns>
         public async Task<IActionResult> ProposedGames(string searchString, string sortOrder, string currentFilter, int? pageNumber)
         {
 

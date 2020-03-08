@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ludotheque.Models
 {
+    [Obsolete]
     public class RegisterViewModel
     {
         [Required]

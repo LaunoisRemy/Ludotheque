@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Ludotheque.Models
 {
+    /// <summary>
+    /// Class for role
+    /// </summary>
     public class CreateRole
     {
         [Required]

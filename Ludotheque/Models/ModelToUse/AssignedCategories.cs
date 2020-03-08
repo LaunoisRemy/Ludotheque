@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace Ludotheque.Models
 {
+    /// <summary>
+    /// Class to know if this category is assigned for a game
+    /// </summary>
     public class AssignedCategories
     {
         public int CategoryId { get; set; }

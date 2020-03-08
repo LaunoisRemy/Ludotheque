@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 
 namespace Ludotheque.Data
 {
+    /// <summary>
+    /// Class for sending mails
+    /// </summary>
     public class AuthSendMsg
     {
-        public string SendGridUser { get; set; } = "ludotheque";
-        public string SendGridKey { get; set; } = "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";
+        public string SendGridUser { get; set; } 
+        public string SendGridKey { get; set; }
     }
 }
